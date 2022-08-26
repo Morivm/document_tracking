@@ -1,0 +1,4 @@
+DEC 12 2021
+    - MODIFY STORED PROCEDURE LoginCheck SELECT INVALID 
+    - ADDED TABLE tmp_receiving_dept
+    - MODIFY STORED PROCEDURE usp_add_receiving_dept

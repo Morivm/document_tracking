@@ -1,0 +1,1 @@
+dont delete barcodes folder on img path

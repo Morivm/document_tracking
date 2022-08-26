@@ -1,0 +1,5 @@
+COUNT=1
+DB_SERVER=localhost
+DB_NAME=doctrack
+DB_LOGIN=root
+DB_PASSWORD=
