@@ -26,6 +26,58 @@
             $pdo->close();
     }
 
+    if($_POST['form']=="select_employee") {
+        try {
+            $stmt = $conn->prepare("SELECT * FROM vw_user_details WHERE row6 = :row6");
+            $stmt->execute(['row6'=>1]);
+            $count = $stmt->rowCount();
+            if($count == 0) {
+                $output[] = array(0,"No Available Employees");
+            }else{
+                while ($row = $stmt->fetchObject()) {
+                    $output[] = array(
+                        $row->row1,
+                        $row->row5
+                    );
+                }
+            }
+            }catch (PDOException $e) {
+                $output = die($e->getMessage());
+            }
+            echo json_encode($output);
+            exit();
+            $pdo->close();
+    }
+
+    if($_POST['form']=="select_type_of_person") {
+        try {
+            $stmt = $conn->prepare("SELECT * FROM vw_type_of_person WHERE row3 = :row3");
+            $stmt->execute(['row3'=>1]);
+            $count = $stmt->rowCount();
+            if($count == 0) {
+                $output[] = array(0,"No Available Type of Person");
+            }else{
+                while ($row = $stmt->fetchObject()) {
+                    $output[] = array(
+                        $row->row1,
+                        $row->row2
+                    );
+                }
+            }
+            }catch (PDOException $e) {
+                $output = die($e->getMessage());
+            }
+            echo json_encode($output);
+            exit();
+            $pdo->close();
+    }
+    
+
+    
+
+
+
+
     // if($_POST['form']=="sel_depwithcode") {
     //     try {
     //         $stmt = $conn->prepare("SELECT * FROM tbl_departments");
