@@ -1,8 +1,8 @@
 <?php
     include 'session.php';
-    // if($userrole != "ADMIN") {
-    //     header("Location: error404"); 
-    // }
+    if($userrole != "SUPERADMIN") {
+        header("Location: error404"); 
+    }
     include '../includes/header.php';
 ?>
 
@@ -30,26 +30,6 @@
                                 <label class="col-md-3 label-control" for="text_1"><label class="text-danger">*</label> Document Type Name</label>
                                 <div class="col-md-9 mx-auto">
                                     <input type="text" id="text_1" name="text_1" class="form-control capitalizefletter" placeholder="Document Type Name">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 label-control" for="text_2"><label class="text-danger">*</label> Document Type Code</label>
-                                <div class="col-md-9 mx-auto">
-                                    <input type="text" id="text_2" name="text_2" class="form-control capitalizefletter" placeholder="Document Type Code">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 label-control" for="text_3"><label class="text-danger">*</label> Duration (HRS)</label>
-                                <div class="col-md-9 mx-auto">
-                                    <input type="text" id="text_3" name="text_3" class="form-control capitalizefletter" placeholder="Duration (HRS)">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 label-control" for="text_4"><label class="text-danger">*</label> Department Code</label>
-                                <div class="col-md-9 mx-auto">
-                                    <select class="form-control cls_dep_new select2" name="text_4" id="text_4">
-                                        <option val=""></option>
-                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -105,10 +85,8 @@
                                             <table id="tbl_main" class="table table-hover table-bordered table-striped tbl_main" style="width:100%">
                                                 <thead class="cdtheadcolor">
                                                     <tr>
-                                                        <th>CODE</th>
-                                                        <th>DOCUMENT TYPE</th>
-                                                        <th>DURATION<em>(hrs)</em></th>
-                                                        <th>Department Code</th>
+                                                        <th>ID</th>
+                                                        <th>Document Type</em></th>
                                                         <th>Actions</th>
                                                     </tr>
                                                 </thead>
@@ -220,19 +198,17 @@
         
                     'ajax': {
                         'method' : 'POST',
-                        'url'    :'../actions/maintenance_doctype_act.php',
+                        'url'    :'../actions/s_maintenance_doctype_act.php',
                         'data'   : {
                                         s_table_main
                         },
                     },
                     'columnDefs': [
-                        { "targets": 4,  "data": null, "defaultContent": "<button class='btn btn-primary edit_btn'>Edit</button>" },
+                        { "targets": 2,  "data": null, "defaultContent": "<button class='btn btn-primary edit_btn'>Edit</button>" },
                     ],
                     'columns': [
-                        { data: 'row2' },
                         { data: 'row1' },
-                        { data: 'row3' },
-                        { data: 'row4' , visible : false},
+                        { data: 'row2' },
                     ],
                     'order'  :   [[ 0, 'asc']],
                     "initComplete":function( settings, json){

@@ -4,9 +4,9 @@
  
     $web_company = "Doctrack";
     $web_company_site = "";
-    $web_copyright_year = "2021";
-    $web_ip = "2021";
-    $web_version = "V.0.0.4";
+    $web_copyright_year = "2022";
+    $web_ip = "2022";
+    $web_version = "V.0.0.1";
 
     $web_conn_url       = ( file_exists("img/resources/setup/new.txt") ) ? "img/resources/setup/new.txt" :  "../img/resources/setup/new.txt";
     $web_textfile       = $web_conn_url;

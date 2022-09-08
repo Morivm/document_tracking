@@ -83,6 +83,33 @@
 
     }
 
+    if(isset($_POST['update_print_bc'])) { 
+
+        try {
+    
+                $stmt = $conn->prepare("call sp_generate_barcode(:in_action , :in_userid, :in_typeofperson, :in_action_by)");
+                $stmt->execute(['in_action'=>'upbarcode', 'in_userid'=>NULL, 'in_typeofperson'=>NULL, 'in_action_by'=>$userid]);
+                $result = $stmt->fetch();
+
+                if($stmt) {
+                    $output = array($result['message_success'], $result['message_title'], $result['message_body']);
+
+                }else{ 
+                    $output = array("error",  "Error Found", $stmt);
+                }
+
+
+        }catch (PDOException $e) {
+            $output = array("error", "Error Found", $e->getMessage());
+            
+        }
+        echo json_encode($output);
+        $pdo->close();
+
+    }
+
+    
+
     // if(isset($_POST['transaction'])){
 
     //     $action     = $_POST['action'];

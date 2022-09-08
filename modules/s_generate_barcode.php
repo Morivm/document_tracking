@@ -154,19 +154,42 @@
                                 openPageLoader();
                             },
                             success : function(response) {
-                                // alert(response);
-                                console.log(response);
                                 closePageLoader();
+                            
                                 if(response[0] == "error") {
                                     responseTosubmit2(response[0], response[1] , response[2]);
                                 }else{
+
+                                    var update_print_bc = "";
                                     var win = window.open(`s_print_generate_barcode.php?ids=${response[2]}`, "thePopUp", "width=500,height=500");
                                         win.document.title = 'Generating ... Please Dont Close';
                                         var pollTimer = window.setInterval(function() {
                                             if (win.closed !== false) { // !== is required for compatibility with Opera
                                                 window.clearInterval(pollTimer);
+                                            $.ajax({
+                                                url     : "../actions/s_generate_barcode_act.php",
+                                                method  : "post",
+                                                dataType : "json",
+                                                data : {
+                                                    update_print_bc
+                                                },
+                                                success : function (response) {
+                                                    console.log(response);
+                                                    if(response[0] =="success") {
+                                                        location.reload();
+                                                    }else{
+                                                        responseTosubmit2(response[0], response[1] , response[2]);
+                                                    }
+                                                }
+
+                                            });
+
                                             }
                                      }, 200);
+                                     
+                               
+
+
                                 }
                             }
 

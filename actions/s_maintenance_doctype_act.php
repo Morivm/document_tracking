@@ -3,6 +3,10 @@
 
     $conn = $pdo->open();
 
+    $draw        = intval(0);
+    $data        = array();
+
+
     if(isset($_POST['transaction'])){
 
         $action     = $_POST['action'];
@@ -46,29 +50,20 @@
         exit();
     }
     if(isset($_POST['s_table_main'])) {
-        $draw        = intval(0);
-        $data        = array();
-    
 
-        if($userrole == "User") {
-            $stmt = $conn->prepare("SELECT * FROM vw_docType WHERE dept_code = :dept_code");
-            $stmt->execute(['dept_code'=>$usedeptcode]);
-        }else{
-            $stmt = $conn->prepare("SELECT * FROM vw_docType");
-            $stmt->execute();
-        }
+
+        $stmt = $conn->prepare("SELECT * FROM vw_setup_document_type WHERE row3 = :row3");
+        $stmt->execute(['row3'=>1]);
+
         $records = $stmt->fetchAll();
         $data = array();
         foreach($records as $row){ 
-            $row1           = $row['doctype_name'];
-            $row2           = $row['doctype_code'];
-            $row3           = $row['duration(hrs)'];
-            $row4           = $row['dept_code'];
+            $row1           = $row['row1'];
+            $row2           = $row['row2'];
+
             $data[] = array(
                 "row1"=>$row1,
                 "row2"=>$row2,
-                "row3"=>$row3,
-                "row4"=>$row4
             );
         }
         $response = array(
