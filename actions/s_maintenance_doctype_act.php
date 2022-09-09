@@ -12,35 +12,19 @@
         $action     = $_POST['action'];
         $id         = $_POST['id'];
         $text_1     = strtoupper($_POST['text_1']);
-        $text_2     = strtoupper($_POST['text_2']);
-        $text_3     = $_POST['text_3'];
-        $text_4     = strtoupper($_POST['text_4']);
-        $text_5     = strtoupper($_POST['text_5']);
-        $text_6     = strtoupper($_POST['text_6']);
-        try {
-            if($action == "ADD") {
-                $stmt = $conn->prepare("EXEC dbo.usp_add_docType @doctype_name = :doctype_name, @doctype_code = :doctype_code,
-                                        @doctype_duration = :doctype_duration, @dept_code = :dept_code");
-                $result = $stmt->execute(['doctype_name'=>$text_1, 'doctype_code'=>$text_2, 'doctype_duration'=>$text_3, 'dept_code'=>$text_4 ]);
 
-                if($result) {
-                    $output = array("success","Success", "Succesfully Save". $text_1);
-                }else{
-                    $output = array("error","Error Found", $result);
-                }
-            }else if($action == "UPDATE") {
-                $stmt = $conn->prepare("EXEC dbo.usp_update_docType @doctype_name = :doctype_name, @doctype_code = :doctype_code,
-                                @duration = :duration, @dept_code = :dept_code,
-                                @olddoctype_name = :olddoctype_name, @olddoctype_code = :olddoctype_code");
-                $result = $stmt->execute(['doctype_name'=>$text_1, 'doctype_code'=>$text_2, 'duration'=>$text_3, 'dept_code'=>$text_4,
-                                        'olddoctype_name'=>$text_5, 'olddoctype_code'=>$text_6
-                                        ]);
-                if($result) {
-                    $output = array("success","Success", "Succesfully Updated". $text_5);
-                }else{
-                    $output = array("error","Error Found", $result);
-                }
+        try {
+
+            $stmt = $conn->prepare("CALL sp_setup_document_type(:in_id, :in_action, :in_param1, :in_action_by)");
+            $stmt->execute(['in_id'=>$id, 'in_action'=>$action, 'in_param1'=>$text_1, 'in_action_by'=>$userid ]);
+            $result = $stmt->fetch();
+
+            if($stmt) {
+                $output = array($result['response_type'],$result['response_title'], $result['response_message']);
+            }else{
+                $output = array("error","Error Found", $stmt);
             }
+
         }catch (PDOException $e) {
             $output = array("error","Error Found", $e->getMessage());
 

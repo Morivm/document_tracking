@@ -348,10 +348,10 @@
                             
                             closePageLoader();
 
-                            if(response[0] != "success") {
-                                responseTosubmit2(response[0], response[1], response[2]);
+                            // if(response[0] != "success") {
+                            //     responseTosubmit2(response[0], response[1], response[2]);
 
-                            }
+                            // }
                         }
 
                     });

@@ -6,6 +6,10 @@
     $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
 
 
+
+
+
+
     if(isset($_POST['generate_barcode'])) { 
 
         $usercid = $_POST['userc_id'];
@@ -108,7 +112,35 @@
 
     }
 
+    if(isset($_POST['get_forms'])) {
+
+        $contract_id  = $_POST['x'];
+
+        
+        try {
+            $output = "";
     
+            $stmt = $conn->prepare("SELECT row3 FROM vw_contract_forms WHERE row2 = :row2");
+            $stmt->execute(['row2'=>$contract_id]);
+            $count = $stmt->rowCount();
+
+            if($count == 0) {
+                $output = array("error", "Error Found", "No Setup for this Contract");
+            }else {
+
+                foreach ($stmt as $row) {
+                    $output .= $row["row3"];
+                }
+            }
+        }catch (PDOException $e) {
+            $output = array("error", "Error Found", $e->getMessage());
+            
+        }
+        echo json_encode($output);
+        $pdo->close();
+
+
+    }
 
     // if(isset($_POST['transaction'])){
 

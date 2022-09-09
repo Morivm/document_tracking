@@ -24,10 +24,10 @@
                 </button>
             </div>
                 <div class="modal-body">
-                    <form id="frm_main" class="form form-horizontal frm_main" method="post" action="../actions/maintenance_doctype_act.php" autocomplete="off">
+                    <form id="frm_main" class="form form-horizontal frm_main" method="post" action="../actions/s_maintenance_doctype_act.php" autocomplete="off">
                         <div class="form-body">
                             <div class="form-group row">
-                                <label class="col-md-3 label-control" for="text_1"><label class="text-danger">*</label> Document Type Name</label>
+                                <label class="col-md-3 label-control" for="text_1"><label class="text-danger">*</label> Document Type</label>
                                 <div class="col-md-9 mx-auto">
                                     <input type="text" id="text_1" name="text_1" class="form-control capitalizefletter" placeholder="Document Type Name">
                                 </div>
@@ -131,30 +131,10 @@
                         text_1: {
                             required : true
                         },
-                        text_2: {
-                            required : true
-                        },
-                        text_3: {
-                            required : true,
-                            digits: true
-                        },
-                        text_4: {
-                            required : true
-                        },
                     },
                     messages: {
                         text_1: {
                             required    : "Document Name Is Required"
-                        },
-                        text_2: {
-                            required    : "Document Code Is Required"
-                        },
-                        text_3: {
-                            required    : "Hour's is Required",
-                            digits      : "Only Numeric Value is Accepted"
-                        },
-                        text_4: {
-                            required    : "Department Code Is Required"
                         },
                     },
                     errorElement: 'span',
@@ -174,8 +154,6 @@
                         formData.append('transaction', "");
                         formData.append('action', s_action);
                         formData.append('id', s_id);
-                        formData.append('text_5', s_old_docname);
-                        formData.append('text_6', s_old_doccode);
                         $.ajax({
                             url         :   form.action,
                             type        :   form.method,
@@ -210,19 +188,15 @@
                         { data: 'row1' },
                         { data: 'row2' },
                     ],
-                    'order'  :   [[ 0, 'asc']],
+                    'order'  :   [[ 0, 'DESC']],
                     "initComplete":function( settings, json){
                         closePageLoader();
                     },
                 });
                 $('#tbl_main tbody').on( 'click', '.edit_btn', function () {
                     var data = table.row( $(this).parents('tr') ).data();
-                    $("#text_1").val(data['row1']);
-                    $("#text_2").val(data['row2']);
-                    $("#text_3").val(data['row3']);
-                    $("#text_4").val(data['row4']).trigger("change");
-                    s_old_docname = data['row1'];
-                    s_old_doccode = data['row2'];
+                    $("#text_1").val(data['row2']); 
+                    s_id = data['row1'];
                     s_action = "UPDATE";
                     $("#mdl_main").modal("show");
                     

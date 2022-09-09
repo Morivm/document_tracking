@@ -15,40 +15,6 @@
     include '../includes/sidebar.php'
 ?>
 
-<!-- <div class="modal fade text-left mdl_main" id="mdl_main" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Setup Department</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-                <div class="modal-body">
-                    <form id="frm_main" class="form form-horizontal frm_main" method="post" action="../actions/s_maintenance_department_act.php" autocomplete="off">
-                        <div class="form-body">
-                            <div class="form-group row">
-                                <label class="col-md-3 label-control" for="text_1"><label class="text-danger">*</label> Department Code</label>
-                                <div class="col-md-9 mx-auto">
-                                    <input type="text" id="text_1" name="text_1" class="form-control capitalizefletter" placeholder="Department Code">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-3 label-control" for="text_2"><label class="text-danger">*</label> Department Name</label>
-                                <div class="col-md-9 mx-auto">
-                                    <input type="text" id="text_2" name="text_2" class="form-control capitalizefletter" placeholder="Department Name">
-                                </div>
-                            </div>
-                        </div>
-                </div>
-            <div class="modal-footer">
-                <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
-                <input type="submit" class="btn btn-outline-primary" value="Save">
-            </div>
-            </form>
-        </div>
-    </div>
-</div> -->
     <div class="app-content content">
         <div class="content-overlay"></div>
         <div class="content-wrapper">
@@ -82,15 +48,27 @@
                                                     <option></option>
                                                 </select>
                                             </div>
+                                            <div class="col-md-9">
+                                                <div class="results_forms">
+                                                    
+                                                </div>
+                                            </div>
+                                        </div><br>
+                                        <div class="row">
                                             <div class="col-md-3">
+                                                <textarea class="form-control" name="text1_2" id="text1_2" cols="30" rows="10" placeholder="Comments"></textarea>
+                                            </div>
+                                        </div>
+                                         
+                                            <!-- <div class="col-md-3">
                                                 <select class="form-control cls-type-of-person" id="txt1_2" name="txt1_2">
                                                     <option></option>
                                                 </select>
                                             </div>
                                             <div class="col-md-3">
                                                 <button class="btn btn-success btn-actions" data-action="generate_barcode">Generate Cover Page</button>
-                                            </div>
-                                        </div>
+                                            </div> -->
+                                      
                                         <!-- <button class="btn btn-primary btn-actions" id="btn_create" name="btn_create" data-action="ADD"> <i class="las la-plus"></i> Add Department</button>  -->
                                     </h4>
                                 </div>
@@ -123,7 +101,7 @@
 
                 pageLocation("", "li_gen_barcode", "Generate Barcode");
             
-                getDataSelect2("cls-employees","Select Person","select_employee");
+                getDataSelect2("cls-employees","Select Contract Name","select_contractname");
 
                 getDataSelect2("cls-type-of-person","Select Type","select_type_of_person");
 
@@ -186,9 +164,6 @@
 
                                             }
                                      }, 200);
-                                     
-                               
-
 
                                 }
                             }
@@ -201,6 +176,27 @@
                 });
             
 
+                
+
+
+                $(document.body).on("change","#txt1_1",function(){
+                    var x =  this.value;
+                    var get_forms = "";
+                    $.ajax({
+                        url : "../actions/s_generate_barcode_act.php",
+                        method : "post",
+                        // dataType : "json",
+                        data : {
+                            get_forms , x
+                        },
+                        success : function(response) {
+                            alert(response);
+                            
+                        }
+
+
+                    });
+                });
 
 
                 // var s_table_main    = "";

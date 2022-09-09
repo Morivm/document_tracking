@@ -26,18 +26,18 @@
             $pdo->close();
     }
 
-    if($_POST['form']=="select_employee") {
+    if($_POST['form']=="select_contractname") {
         try {
-            $stmt = $conn->prepare("SELECT * FROM vw_user_details WHERE row6 = :row6");
-            $stmt->execute(['row6'=>1]);
+            $stmt = $conn->prepare("SELECT * FROM vw_contract_types WHERE row3 = :row3");
+            $stmt->execute(['row3'=>1]);
             $count = $stmt->rowCount();
             if($count == 0) {
-                $output[] = array(0,"No Available Employees");
+                $output[] = array(0,"No Contracts Found");
             }else{
                 while ($row = $stmt->fetchObject()) {
                     $output[] = array(
                         $row->row1,
-                        $row->row5
+                        $row->row2
                     );
                 }
             }
