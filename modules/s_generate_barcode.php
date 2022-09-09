@@ -44,21 +44,153 @@
                                     <h4 class="card-title">
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <select class="form-control cls-employees" id="txt1_1" name="txt1_1">
-                                                    <option></option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-9">
-                                                <div class="results_forms">
-                                                    
-                                                </div>
+                                                <input type="text" class="form-control" name="txt1_0" id="txt1_0" placeholder="Order of Business Date">
                                             </div>
                                         </div><br>
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <textarea class="form-control" name="text1_2" id="text1_2" cols="30" rows="10" placeholder="Comments"></textarea>
+                                                <select class="form-control cls-employees" id="txt1_1" name="txt1_1">
+                                                    <option></option>
+                                                </select>
+                                            </div>
+                                        </div><br>
+                                        <div class="row">
+                                            <div class="col-md-9">
+                                                <div id="results_forms"></div>
                                             </div>
                                         </div>
+
+                                        <hr>
+
+                                        <label class="text-primary font-weight-bold">Order of Business</label>
+                                        <div class="row">
+                                            <div class="col-md-3">
+
+                                                <select class="form-control cls-orderofbusiness" id="txt1_2" name="txt1_2">
+                                                    <option></option>
+                                                </select>
+                                                <br><br>
+
+                                                <input type="text" class="form-control" name="text1_3" id="text1_3" placeholder="Title">
+                                                <br>
+
+                                                <input type="text" class="form-control" name="text1_4" id="text1_4" placeholder="Ordinance Code/ Referrence No.">
+                                                <br>
+
+                                                <textarea class="form-control" name="text1_5" id="text1_5" cols="30" rows="5" placeholder="Description"></textarea>
+                                                <br>
+
+                                                <button class="btn btn-success btn-block">Add</button>
+                                            </div>
+
+                                            <div class="col-md-9">
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered table-hover table-stripped">
+                                                        <thead style="background-color:#1E9FF2 ; color:white">
+                                                            <tr>
+                                                                <th scope="col">#</th>
+                                                                <th scope="col">Order of Business</th>
+                                                                <th scope="col">Title</th>
+                                                                <th scope="col">Ordinance Code/ Ref No.</th>
+                                                                <th scope="col">Description</th>
+                                                                <th scope="col">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                            <th scope="row">1</th>
+                                                            <td>Mark</td>
+                                                            <td>Otto</td>
+                                                            <td>@mdo</td>
+                                                            <td>Otto</td>
+                                                            <td>@mdo</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <th scope="row">2</th>
+                                                            <td>Jacob</td>
+                                                            <td>Thornton</td>
+                                                            <td>@fat</td>
+                                                            <td>Otto</td>
+                                                            <td>@mdo</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <th scope="row">3</th>
+                                                            <td>Larry</td>
+                                                            <td>the Bird</td>
+                                                            <td>@twitter</td>
+                                                            <td>Otto</td>
+                                                            <td>@mdo</td>
+                                                            
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                        </div><br>
+
+
+                                        <!-- ============================================COMMITTEE -->
+
+                                        <hr>
+
+                                        <label class="text-primary font-weight-bold">Committee</label>
+                           
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <select class="form-control cls-commitee" id="txt1_6" name="txt1_6">
+                                                    <option></option>
+                                                </select>
+                                                <br><br>
+
+                                                <button class="btn btn-success btn-block">Add</button>
+                                            </div>
+
+                                            <div class="col-md-9">
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-hover table-stripped">
+                                                    <thead style="background-color:#1E9FF2 ; color:white">
+                                                        <tr>
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">Committee</th>
+                                                            <th scope="col">Persons</th>
+                                                            <th scope="col">Positions</th>
+                                                            <th scope="col">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                            <tr>
+                                                            <th scope="row">1</th>
+                                                            <td>Mark</td>
+                                                            <td>Otto</td>
+                                                            <td>@mdo</td>
+                                                            <td>Otto</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <th scope="row">2</th>
+                                                            <td>Jacob</td>
+                                                            <td>Thornton</td>
+                                                            <td>@fat</td>
+                                                            <td>Otto</td>
+                                                            </tr>
+                                                            <tr>
+                                                            <th scope="row">3</th>
+                                                            <td>Larry</td>
+                                                            <td>the Bird</td>
+                                                            <td>@twitter</td>
+                                                            <td>Otto</td>
+                                                            
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                            
+                                        <br>
+                                        <button type="button" class="btn btn-success pull-right">Generatate</button>
                                          
                                             <!-- <div class="col-md-3">
                                                 <select class="form-control cls-type-of-person" id="txt1_2" name="txt1_2">
@@ -102,8 +234,16 @@
                 pageLocation("", "li_gen_barcode", "Generate Barcode");
             
                 getDataSelect2("cls-employees","Select Contract Name","select_contractname");
+                getDataSelect2("cls-orderofbusiness","Select Order of Business","select_orderofbusiness");
+                getDataSelect2("cls-commitee","Select Commitee","select_commitee");
+
+                
+                
+
 
                 getDataSelect2("cls-type-of-person","Select Type","select_type_of_person");
+
+
 
                 closePageLoader();
 
@@ -185,16 +325,22 @@
                     $.ajax({
                         url : "../actions/s_generate_barcode_act.php",
                         method : "post",
-                        // dataType : "json",
+                        dataType : "json",
                         data : {
                             get_forms , x
                         },
+                        beforeSend : function () {
+                            $("#results_forms").html("");
+                        },
                         success : function(response) {
-                            alert(response);
+                            console.log(response);
+                            if(response[0] == "error") {
+                                $("#results_forms").html("");
+                            }else{
+                                $("#results_forms").html(response);
+                            }
                             
                         }
-
-
                     });
                 });
 

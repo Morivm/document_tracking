@@ -120,7 +120,7 @@
         try {
             $output = "";
     
-            $stmt = $conn->prepare("SELECT row3 FROM vw_contract_forms WHERE row2 = :row2");
+            $stmt = $conn->prepare("SELECT row1, row3 FROM vw_contract_forms WHERE row2 = :row2");
             $stmt->execute(['row2'=>$contract_id]);
             $count = $stmt->rowCount();
 
@@ -129,7 +129,7 @@
             }else {
 
                 foreach ($stmt as $row) {
-                    $output .= $row["row3"];
+                    $output .= "<input type='checkbox' id='v_".$row['row1']."' name='v_".$row['row1']."' value='Bike'>&nbsp;   <label for='v_".$row['row1']."'> ".$row['row3']."</label><br>" ;
                 }
             }
         }catch (PDOException $e) {

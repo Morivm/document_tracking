@@ -72,9 +72,51 @@
             $pdo->close();
     }
     
-
+    if($_POST['form']=="select_orderofbusiness") {
+        try {
+            $stmt = $conn->prepare("SELECT row1, row2 FROM vw_order_of_business WHERE row3 = :row3");
+            $stmt->execute(['row3'=>1]);
+            $count = $stmt->rowCount();
+            if($count == 0) {
+                $output[] = array(0,"No Order of Business Selected");
+            }else{
+                while ($row = $stmt->fetchObject()) {
+                    $output[] = array(
+                        $row->row1,
+                        $row->row2
+                    );
+                }
+            }
+            }catch (PDOException $e) {
+                $output = die($e->getMessage());
+            }
+            echo json_encode($output);
+            exit();
+            $pdo->close();
+    }
     
-
+    if($_POST['form']=="select_commitee") {
+        try {
+            $stmt = $conn->prepare(" SELECT row1,row2 FROM vw_setup_committee WHERE row3 = :row3");
+            $stmt->execute(['row3'=>1]);
+            $count = $stmt->rowCount();
+            if($count == 0) {
+                $output[] = array(0,"No Committee Setup.");
+            }else{
+                while ($row = $stmt->fetchObject()) {
+                    $output[] = array(
+                        $row->row1,
+                        $row->row2
+                    );
+                }
+            }
+            }catch (PDOException $e) {
+                $output = die($e->getMessage());
+            }
+            echo json_encode($output);
+            exit();
+            $pdo->close();
+    }
 
 
 
