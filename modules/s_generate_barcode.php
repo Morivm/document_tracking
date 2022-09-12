@@ -80,12 +80,12 @@
                                                 <textarea class="form-control" name="text1_5" id="text1_5" cols="30" rows="5" placeholder="Description"></textarea>
                                                 <br>
 
-                                                <button class="btn btn-success btn-block">Add</button>
+                                                <button class="btn btn-success btn-block btn-actions" data-action="add_order_business">Add</button>
                                             </div>
 
                                             <div class="col-md-9">
                                                 <div class="table-responsive">
-                                                    <table class="table table-bordered table-hover table-stripped">
+                                                    <table class="table table-bordered table-hover table-stripped" id="tbl_main1">
                                                         <thead style="background-color:#1E9FF2 ; color:white">
                                                             <tr>
                                                                 <th scope="col">#</th>
@@ -96,33 +96,6 @@
                                                                 <th scope="col">Action</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                            <th scope="row">1</th>
-                                                            <td>Mark</td>
-                                                            <td>Otto</td>
-                                                            <td>@mdo</td>
-                                                            <td>Otto</td>
-                                                            <td>@mdo</td>
-                                                            </tr>
-                                                            <tr>
-                                                            <th scope="row">2</th>
-                                                            <td>Jacob</td>
-                                                            <td>Thornton</td>
-                                                            <td>@fat</td>
-                                                            <td>Otto</td>
-                                                            <td>@mdo</td>
-                                                            </tr>
-                                                            <tr>
-                                                            <th scope="row">3</th>
-                                                            <td>Larry</td>
-                                                            <td>the Bird</td>
-                                                            <td>@twitter</td>
-                                                            <td>Otto</td>
-                                                            <td>@mdo</td>
-                                                            
-                                                            </tr>
-                                                        </tbody>
                                                     </table>
                                                 </div>
                                             </div>
@@ -236,17 +209,12 @@
                 getDataSelect2("cls-employees","Select Contract Name","select_contractname");
                 getDataSelect2("cls-orderofbusiness","Select Order of Business","select_orderofbusiness");
                 getDataSelect2("cls-commitee","Select Commitee","select_commitee");
-
-                
-                
-
-
                 getDataSelect2("cls-type-of-person","Select Type","select_type_of_person");
-
-
 
                 closePageLoader();
 
+                var s_table_main1 = "";
+                
 
 
                 $(document).on('click', '.btn-actions', function(e){
@@ -310,6 +278,33 @@
 
                         });
 
+                    }else if(actions == "add_order_business") {
+                        e.preventDefault();
+                        
+                        var create_order_of_busineess = "";
+                        var order_business_id   = $("#txt1_2").val();
+                        var order_title         = $("#text1_3").val();
+                        var order_ordinance_code= $("#text1_4").val();
+                        var order_description   = $("#text1_5").val();
+                        var barcode             = "fafdsafdafdafdfadf";
+
+                        $.ajax({
+                            url : "../actions/s_generate_barcode_act.php",
+                            method : "post",
+                            // dataType: "json",
+                            data : {
+                                barcode,
+                                create_order_of_busineess,
+                                order_business_id,
+                                order_title,
+                                order_ordinance_code,
+                                order_description
+                            },
+                            success : function(response){
+                                alert(response);
+                            }
+
+                        });
                     }else{
                         responseTosubmit2("error", "Error Found", "Please Reload Page First.");
                     }
@@ -414,32 +409,33 @@
                 //     }
                 // });
 
-                // var table = $('#tbl_main').DataTable( {
+                var table = $('#tbl_main1').DataTable( {
         
-                //     'ajax': {
-                //         'method' : 'POST',
-                //         'url'    :'../actions/s_maintenance_department_act.php',
-                //         'data'   : {
-                //                         s_table_main
-                //         },
-                //     },
-                //     'columnDefs': [
-                //         { "targets": 3,  "data": null, "defaultContent": "<button class='btn btn-primary edit_btn'> <i class='lar la-edit'></i>Edit</button>" },
-                //     ],
+                    'ajax': {
+                        'method' : 'POST',
+                        'url'    :'../actions/s_generate_barcode_act.php',
+                        'data'   : {
+                                        s_table_main1
+                        },
+                    },
+                    'columnDefs': [
+                        { "targets": 5,  "data": null, "defaultContent": "<button class='btn btn-primary edit_btn'> <i class='lar la-edit'></i>Edit</button>" },
+                    ],
 
-                //     'columns': [
+                    'columns': [
               
-                //         { data: 'row1' , visible : false },
-                //         { data: 'row2' },
-                //         { data: 'row3' },
-          
-                //     ],
+                        { data: 'row1' },
+                        { data: 'row2' },
+                        { data: 'row3' },
+                        { data: 'row4' },
+                        { data: 'row5' },
+                    ],
 
-                //     'order'  :   [[ 0, 'DESC']],
-                //     "initComplete":function( settings, json){
-                //         closePageLoader();
-                //     },
-                // });
+                    // 'order'  :   [[ 0, 'DESC']],
+                    "initComplete":function( settings, json){
+                        // closePageLoader();
+                    },
+                });
                 // $('#tbl_main tbody').on( 'click', '.edit_btn', function () {
                 //     var data = table.row( $(this).parents('tr') ).data();
 

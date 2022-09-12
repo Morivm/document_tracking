@@ -142,6 +142,81 @@
 
     }
 
+
+    if(isset($_POST['create_order_of_busineess'])) {
+
+
+        $barcode                = $_POST['barcode'];
+        $order_business_id      = $_POST['order_business_id'];
+        $order_title            = $_POST['order_title'];
+        $order_ordinance_code   = $_POST['order_ordinance_code'];
+        $order_description      = $_POST['order_description'];
+        
+        try {
+     
+            if (empty($order_business_id)) {
+                $output = array("error", "Error Found", "Order of Business is Required");
+            }else   if (empty($order_title)) {
+                $output = array("error", "Error Found", "Title is Required");
+            }else   if (empty($order_ordinance_code)) {
+                $output = array("error", "Error Found", "Ordinance Code is Required");
+            }else {
+                
+                $stmt = $conn->prepare("INSERT INTO tmp_order_of_business(barcode, order_of_business_id, title, ordinance_code, description, added_by)
+                                        VALUES(:barcode, :order_of_business_id, :title, :ordinance_code, :description, :added_by)");
+                $stmt->execute(['barcode'=>$barcode, 'order_of_business_id'=>$order_business_id, 'title'=>$order_title,  'ordinance_code'=>$order_ordinance_code, 'description'=>$order_description, 'added_by'=>$userid ]);
+                
+                if($stmt) {
+                    $output = array("success", "Success", "Successfully Added");
+                }else {
+                    $output = array("error", "Error Found", $stmt);
+                }
+
+            }
+
+        }catch (PDOException $e) {
+            $output = array("error", "Error Found", $e->getMessage());
+            
+        }
+        echo json_encode($output);
+        $pdo->close();
+
+
+    }
+
+
+    if(isset($_POST['s_table_main1'])) {
+        $draw        = intval(0);
+        $data        = array();
+    
+
+        $stmt = $conn->prepare("SELECT * FROM vw_gen_order_business WHERE row9 = :row9");
+        $stmt->execute(['row9'=>$userid]);
+        $records = $stmt->fetchAll();
+        $data = array();
+        foreach($records as $row){
+            $row1           = $row['row1'];
+            $row2           = $row['row3'];
+            $row3           = $row['row4'];
+            $row4           = $row['row5'];
+            $row5           = $row['row6'];
+            $data[] = array(
+                "row1"=>$row1,
+                "row2"=>$row2,
+                "row3"=>$row3,
+                "row4"=>$row4,
+                "row5"=>$row5
+            );
+        }
+        $response = array(
+            "aaData" => $data
+        );
+        echo json_encode($response);
+        $pdo->close();
+    }
+
+
+
     // if(isset($_POST['transaction'])){
 
     //     $action     = $_POST['action'];
