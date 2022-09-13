@@ -71,9 +71,6 @@
 
                 }
 
-
-               
-
             }
 
 
@@ -145,8 +142,6 @@
 
     if(isset($_POST['create_order_of_busineess'])) {
 
-
-        $barcode                = $_POST['barcode'];
         $order_business_id      = $_POST['order_business_id'];
         $order_title            = $_POST['order_title'];
         $order_ordinance_code   = $_POST['order_ordinance_code'];
@@ -162,9 +157,9 @@
                 $output = array("error", "Error Found", "Ordinance Code is Required");
             }else {
                 
-                $stmt = $conn->prepare("INSERT INTO tmp_order_of_business(barcode, order_of_business_id, title, ordinance_code, description, added_by)
-                                        VALUES(:barcode, :order_of_business_id, :title, :ordinance_code, :description, :added_by)");
-                $stmt->execute(['barcode'=>$barcode, 'order_of_business_id'=>$order_business_id, 'title'=>$order_title,  'ordinance_code'=>$order_ordinance_code, 'description'=>$order_description, 'added_by'=>$userid ]);
+                $stmt = $conn->prepare("INSERT INTO tmp_order_of_business(order_of_business_id, title, ordinance_code, description, added_by)
+                                        VALUES(:order_of_business_id, :title, :ordinance_code, :description, :added_by)");
+                $stmt->execute(['order_of_business_id'=>$order_business_id, 'title'=>$order_title,  'ordinance_code'=>$order_ordinance_code, 'description'=>$order_description, 'added_by'=>$userid ]);
                 
                 if($stmt) {
                     $output = array("success", "Success", "Successfully Added");
@@ -184,13 +179,116 @@
 
     }
 
+    if(isset($_POST['create_commitees'])) {
+        $committee_id                = $_POST['committee_id'];
+        try {
+     
+            if (empty($committee_id)) {
+                $output = array("error", "Error Found", "Committee is Required");
+            }else {
+                
+                $stmt = $conn->prepare("REPLACE  INTO tmp_committees (committee_id, userid, action_by)
+                                        SELECT b.committee_id, b.id, $userid
+                                        FROM tbl_users_detail b
+                                        WHERE b.committee_id = :committee_id");
+                $stmt->execute([ 'committee_id'=>$committee_id]);
+                
+                if($stmt) {
+                    $output = array("success", "Success", "Commiteee Successfully Added");
+                }else {
+                    $output = array("error", "Error Found", $stmt);
+                }
+
+            }
+
+        }catch (PDOException $e) {
+            $output = array("error", "Error Found", $e->getMessage());
+            
+        }
+        echo json_encode($output);
+        $pdo->close();
+    }
+
+    
+    if(isset($_POST['gen_cover_page'])) {
+
+        $words = explode(" ", $userdeptname);
+        $acronym = "";
+
+        foreach ($words as $w) {
+            $acronym .= mb_substr($w, 0, 1);
+        }
+        $barcode                =$acronym.$userid.time();
+
+        try {
+
+            $files = $barcode;
+            $path = "../img/barcodes/$barcode";
+            $put = file_put_contents("../modules/imgsbarcode/$barcode.jpg", $generator->getBarcode($barcode, $generator::TYPE_CODE_128));
+                $tmpFilePath =  $barcode;
+                if ($tmpFilePath != ""){
+                    $newFilePath = $path."/". str_replace(' ', '_', $barcode);
+                    $getattachmentname =  str_replace(' ', '_',  $barcode);
+                    if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+                        $str .= $getattachmentname . $delimiter;
+                    }
+                }
+
+
+            if($put) {
+
+                $stmt = $conn->prepare("CALL sp_generate_cover_photo(:in_action, :in_barcode, :in_action_by)");
+                $stmt->execute(['in_action'=>'generate','in_barcode'=>$barcode, 'in_action_by'=>$userid]);
+                $result = $stmt->fetch();
+
+                if($stmt) {
+                    $output = array($result['message_success'], $result['message_title'], $result['message_body']);
+                }  else{
+
+                    $output = array("error", "Error Found", $stmt);
+                }
+            }else{
+
+                $output = array("error", "Error Found", $put);
+            }
+
+        }catch (PDOException $e) {
+            $output = array("error", "Error Found", $e->getMessage());
+            
+        }
+        echo json_encode($output);
+        $pdo->close();
+    }
+
+    if(isset($_POST['deletefirst_tmp'])) {
+
+  
+        try {
+            $stmt = $conn->prepare("CALL sp_generate_cover_photo(:in_action, :in_barcode, :in_action_by)");
+            $stmt->execute(['in_action'=>'deletefirst_tmps','in_barcode'=>'', 'in_action_by'=>$userid]);
+            $result = $stmt->fetch();
+
+            if($stmt) {
+                $output = array($result['message_success'], $result['message_title'], $result['message_body']);
+            }  else{
+                $output = array("error", "Error Found", $stmt);
+            }
+
+
+        }catch (PDOException $e) {
+            $output = array("error", "Error Found", $e->getMessage());
+            
+        }
+        echo json_encode($output);
+        $pdo->close();
+    }
 
     if(isset($_POST['s_table_main1'])) {
         $draw        = intval(0);
         $data        = array();
     
 
-        $stmt = $conn->prepare("SELECT * FROM vw_gen_order_business WHERE row9 = :row9");
+        $stmt = $conn->prepare("SELECT * FROM vw_tmp_order_business WHERE row9 = :row9");
         $stmt->execute(['row9'=>$userid]);
         $records = $stmt->fetchAll();
         $data = array();
@@ -215,7 +313,35 @@
         $pdo->close();
     }
 
+    if(isset($_POST['s_table_main2'])) {
+        $draw        = intval(0);
+        $data        = array();
+    
 
+        $stmt = $conn->prepare("SELECT * FROM vw_tmp_commitees WHERE row7 = :row7");
+        $stmt->execute(['row7'=>$userid]);
+        $records = $stmt->fetchAll();
+        $data = array();
+        foreach($records as $row){
+            $row1           = $row['row1'];
+            $row2           = $row['row3'];
+            $row3           = $row['row5'];
+            $row4           = $row['row6'];
+            // $row5           = $row['row6'];
+            $data[] = array(
+                "row1"=>$row1,
+                "row2"=>$row2,
+                "row3"=>$row3,
+                "row4"=>$row4,
+                // "row5"=>$row5
+            );
+        }
+        $response = array(
+            "aaData" => $data
+        );
+        echo json_encode($response);
+        $pdo->close();
+    }
 
     // if(isset($_POST['transaction'])){
 
@@ -246,31 +372,5 @@
     //     $pdo->close();
     //     exit();
     // }
-    // if(isset($_POST['s_table_main'])) {
-    //     $draw        = intval(0);
-    //     $data        = array();
     
-
-    //     $stmt = $conn->prepare("SELECT * FROM vw_setup_sub_department WHERE row5 = :row5");
-    //     $stmt->execute(['row5'=>1]);
-    //     $records = $stmt->fetchAll();
-    //     $data = array();
-    //     foreach($records as $row){
-    //         $row1           = $row['row1'];
-    //         $row2           = $row['row2'];
-    //         $row3           = $row['row3'];
-    //         $row4           = $row['row4'];
-    //         $data[] = array(
-    //             "row1"=>$row1,
-    //             "row2"=>$row2,
-    //             "row3"=>$row3,
-    //             "row4"=>$row4
-    //         );
-    //     }
-    //     $response = array(
-    //         "aaData" => $data
-    //     );
-    //     echo json_encode($response);
-    //     $pdo->close();
-    // }
 ?>

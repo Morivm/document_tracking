@@ -95,7 +95,10 @@
                                                 <thead class="cdtheadcolor">
                                                     <tr>
                                                         <th>ID</th>
-                                                        <th>Name</th>
+                                                        <th>Details</th>
+                                                        <th>Creator</th>
+                                                        <th>Created Date</th>
+                                                        <th>Availability</th>
                                                         <th>Actions</th>
                                                     </tr>
                                                 </thead>
@@ -275,57 +278,46 @@
                         },
                     },
                     'columnDefs': [
-                        { "targets": 2,  "data": null, "defaultContent": "<button class='btn btn-primary viewdocs_btn'> <i class='las la-eye'></i> View Documents</button>" },
+                        { "targets": 5,  "data": null, "defaultContent": "<button class='btn btn-primary btn-dl-files'>Download Files</button>" },
                     ],
 
                     'columns': [
               
                         { data: 'row1' },
-                        { data: 'row2' },
+                        { data: 'row2', visible : false },
+                        { data: 'row3' },
+                        { data: 'row4' },
+                        { data: 'row5' },
           
                     ],
 
                     'order'  :   [[ 0, 'DESC']],
                     "initComplete":function( settings, json){
-                        SyncDocument();
-                
+                        // SyncDocument();
+                        closePageLoader();
                     },
                 });
-                $('#tbl_main tbody').on( 'click', '.viewdocs_btn', function () {
+                $('#tbl_main tbody').on( 'click', '.btn-dl-files', function () {
                     var data = table.row( $(this).parents('tr') ).data();
+                    var getFileondb = "";
+                    var barcode = data['row1'];
               
-                    var view_userId =  data['row1'];
-                    var s_table_main2 = "";
+                    window.open(`s_print_blob_db.php?barcode=${barcode}`);
 
-                    var table2 = $('#tbl_main2').DataTable( {
-                        'destroy'   : true,
-                        'ajax': {
-                            'method' : 'POST',
-                            'url'    :'../actions/s_addupdate_doc_act.php',
-                            'data'   : {
-                                            s_table_main2 , view_userId
-                            },
-                        },
-                        // 'columnDefs': [
-                        //     { "targets": 2,  "data": null, "defaultContent": "<button class='btn btn-primary viewdocs_btn'> <i class='las la-eye'></i> View Documents</button>" },
-                        // ],
-
-                        'columns': [
-                
-                            { data: 'row1' },
-                            { data: 'row2' },
-            
-                        ],
-
-                        'order'  :   [[ 0, 'DESC']],
-                        "initComplete":function( settings, json){
-                            // SyncDocument();
                     
-                        },
-                    });
 
+                    // $.ajax({
+                    //     url : "../actions/s_addupdate_doc_act.php",
+                    //     method : "post",
+                    //     dataType : "json",
+                    //     data : {
+                    //         getFileondb, barcode
+                    //     },
+                    //     success : function (response) {
+                    //         alert(response);
+                    //     }
 
-                    $("#mdl_main").modal("show");
+                    // });
 
                     
                 } );

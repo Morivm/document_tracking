@@ -40,16 +40,31 @@
 
     if(isset($_POST['s_table_main'])) {
 
-        $stmt = $conn->prepare("SELECT * FROM vw_users_w_docs");
+        $stmt = $conn->prepare("SELECT 
+            b.barcode AS row1,
+            GROUP_CONCAT(title, ' ',ordinance_code, ' ',description) AS row2,
+            func_fullname(b.created_by) AS row3,
+            `func_Dateformat`(created_date,3) AS row4,
+            b.isAvailable AS row5
+             
+         FROM `search_order_of_business` a
+         LEFT JOIN `tbl_activities` b ON b.barcode = a.barcode");
         $stmt->execute(['row6'=>1]);
         $records = $stmt->fetchAll();
         $data = array();
         foreach($records as $row){
-            $row1           = $row['row2'];
-            $row2           = $row['row1'];
+            $row1           = $row['row1'];
+            $row2           = $row['row2'];
+            $row3           = "Creator: ".$row['row3'];
+            $row4           = $row['row4'];
+            $row5           = ($row['row5'] == 1 ) ? "Session On Going <image src='../img/web/circle_green.png' width='10px'> " :  "Session Down <image src='../img/web/circle_red.png' width='10px'>";
             $data[] = array(
                 "row1"=>$row1,
-                "row2"=>$row2
+                "row2"=>$row2,
+                "row3"=>$row3,
+                "row4"=>$row4,
+                "row5"=>$row5
+
             );
         }
         $response = array(
@@ -85,6 +100,35 @@
         echo json_encode($response);
         $pdo->close();
     }
+
+
+
+    if(isset($_POST['getFileondb'])) {
+
+        $barcode = $_POST['barcode'];
+
+
+        $stmt = $conn->prepare("SELECT * FROM vw_users_docs WHERE row3 = :row3");
+        $stmt->execute(['row3'=>$user_id]);
+        $records = $stmt->fetchAll();
+        $data = array();
+        foreach($records as $row){
+
+            $row1           = $row['row6'];
+            $row2           = "  <a href='".$row['row2']."' target='_blank'> Click to Download </a>";
+
+            $data[] = array(
+                "row1"=>$row1,
+                "row2"=>$row2
+            );
+        }
+        $response = array(
+            "aaData" => $data
+        );
+        echo json_encode($response);
+        $pdo->close();
+    }
+
 
 
 ?>

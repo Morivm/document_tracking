@@ -21,6 +21,7 @@
                         $_SESSION['user_id'] = $ftc_stmt['row1'];
                         $_SESSION['user_type'] = $ftc_stmt['row7'];
                         $_SESSION['user_fullname'] = $ftc_stmt['row5'];
+                        $_SESSION['user_department'] = $ftc_stmt['row8'];
 
                         $output = array("success","Login Success", "Redirecting...");
 

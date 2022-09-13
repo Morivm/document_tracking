@@ -73,6 +73,15 @@
             }
             return $is_conn;
         }
+        public function dateFormating($format ,$date){
+         
+            if($format == "1") {
+                return  date_format($date,"Y/m/d H:i:s");
+            }else{
+                return  "Invalid Date Format.";
+            }
+ 
+        }
     }
 
 $pdo = new Database();

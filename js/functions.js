@@ -96,11 +96,14 @@ function responseTosubmit(str_successmsg, str_body, str_title, frm_class, dtclas
 }
 function responseTosubmitcustomselect(str_successmsg, str_body, str_title, frm_class, dtclass, modalclass) {
     $.unblockUI();
+    closePageLoader();
+
     if(str_successmsg == "success") {
         toastr.success(str_title, str_body, { "closeButton": true });
         $(`.${frm_class}`).trigger('reset');
         // $(`.select2`).val('').trigger('change');
         $(`.select2-custom`).val('').trigger('change');
+        $(`.textfield-custom`).val('');
         $(`.${modalclass}`).modal('hide');
         $(`.${dtclass}`).DataTable().ajax.reload(null,false);
     }else if(str_successmsg == "error") {
@@ -111,6 +114,7 @@ function responseTosubmitcustomselect(str_successmsg, str_body, str_title, frm_c
 }
 function responseTosubmitnOselect(str_successmsg, str_body, str_title, frm_class, dtclass, modalclass) {
     $.unblockUI();
+    closePageLoader();
     if(str_successmsg == "success") {
         toastr.success(str_title, str_body, { "closeButton": true });
         $(`.${frm_class}`).trigger('reset');

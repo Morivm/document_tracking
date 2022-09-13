@@ -66,18 +66,18 @@
                                         <div class="row">
                                             <div class="col-md-3">
 
-                                                <select class="form-control cls-orderofbusiness" id="txt1_2" name="txt1_2">
+                                                <select class="form-control cls-orderofbusiness select2-custom" id="txt1_2" name="txt1_2">
                                                     <option></option>
                                                 </select>
                                                 <br><br>
 
-                                                <input type="text" class="form-control" name="text1_3" id="text1_3" placeholder="Title">
+                                                <input type="text" class="form-control textfield-custom" name="text1_3" id="text1_3" placeholder="Title">
                                                 <br>
 
-                                                <input type="text" class="form-control" name="text1_4" id="text1_4" placeholder="Ordinance Code/ Referrence No.">
+                                                <input type="text" class="form-control textfield-custom" name="text1_4" id="text1_4" placeholder="Ordinance Code/ Referrence No.">
                                                 <br>
 
-                                                <textarea class="form-control" name="text1_5" id="text1_5" cols="30" rows="5" placeholder="Description"></textarea>
+                                                <textarea class="form-control textfield-custom" name="text1_5" id="text1_5" cols="30" rows="5" placeholder="Description"></textarea>
                                                 <br>
 
                                                 <button class="btn btn-success btn-block btn-actions" data-action="add_order_business">Add</button>
@@ -85,7 +85,7 @@
 
                                             <div class="col-md-9">
                                                 <div class="table-responsive">
-                                                    <table class="table table-bordered table-hover table-stripped" id="tbl_main1">
+                                                    <table class="table table-bordered table-hover table-stripped tbl_main1"  id="tbl_main1">
                                                         <thead style="background-color:#1E9FF2 ; color:white">
                                                             <tr>
                                                                 <th scope="col">#</th>
@@ -111,17 +111,17 @@
                            
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <select class="form-control cls-commitee" id="txt1_6" name="txt1_6">
+                                                <select class="form-control cls-commitee select2-custom" id="txt1_6" name="txt1_6">
                                                     <option></option>
                                                 </select>
                                                 <br><br>
 
-                                                <button class="btn btn-success btn-block">Add</button>
+                                                <button class="btn btn-success btn-block btn-actions" data-action="addcommitee">Add</button>
                                             </div>
 
                                             <div class="col-md-9">
                                             <div class="table-responsive">
-                                                <table class="table table-bordered table-hover table-stripped">
+                                                <table class="table table-bordered table-hover table-stripped tbl_main2"  id="tbl_main2">
                                                     <thead style="background-color:#1E9FF2 ; color:white">
                                                         <tr>
                                                             <th scope="col">#</th>
@@ -131,39 +131,15 @@
                                                             <th scope="col">Action</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
-                                                            <tr>
-                                                            <th scope="row">1</th>
-                                                            <td>Mark</td>
-                                                            <td>Otto</td>
-                                                            <td>@mdo</td>
-                                                            <td>Otto</td>
-                                                            </tr>
-                                                            <tr>
-                                                            <th scope="row">2</th>
-                                                            <td>Jacob</td>
-                                                            <td>Thornton</td>
-                                                            <td>@fat</td>
-                                                            <td>Otto</td>
-                                                            </tr>
-                                                            <tr>
-                                                            <th scope="row">3</th>
-                                                            <td>Larry</td>
-                                                            <td>the Bird</td>
-                                                            <td>@twitter</td>
-                                                            <td>Otto</td>
-                                                            
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+                                                </table>
                                                 </div>
                                             </div>
 
- test
+
                                         </div>
                             
                                         <br>
-                                        <button type="button" class="btn btn-success pull-right">Generatate</button>
+                                        <button type="button" class="btn btn-success pull-right btn-actions" data-action="gen_coverpage">Generatate Cover Page</button>
                                          
                                             <!-- <div class="col-md-3">
                                                 <select class="form-control cls-type-of-person" id="txt1_2" name="txt1_2">
@@ -211,11 +187,11 @@
                 getDataSelect2("cls-commitee","Select Commitee","select_commitee");
                 getDataSelect2("cls-type-of-person","Select Type","select_type_of_person");
 
-                closePageLoader();
+                deletefirstdb();
 
                 var s_table_main1 = "";
+                var s_table_main2 = "";
                 
-
 
                 $(document).on('click', '.btn-actions', function(e){
                     e.preventDefault();
@@ -291,7 +267,7 @@
                         $.ajax({
                             url : "../actions/s_generate_barcode_act.php",
                             method : "post",
-                            // dataType: "json",
+                            dataType: "json",
                             data : {
                                 barcode,
                                 create_order_of_busineess,
@@ -300,11 +276,75 @@
                                 order_ordinance_code,
                                 order_description
                             },
+                            beforeSend:function() {
+                                openPageLoader();
+                            },
                             success : function(response){
-                                alert(response);
+                                responseTosubmitcustomselect(response[0], response[1], response[2], "noform", "tbl_main1", "nomodal");
                             }
 
                         });
+                    
+                    }else if (actions == "addcommitee") {
+                        
+                        var create_commitees = "";
+                        var committee_id = $("#txt1_6").val();
+
+                        $.ajax({
+                            url : "../actions/s_generate_barcode_act.php",
+                            method : "post",
+                            dataType: "json",
+                            data    : {
+                                create_commitees, committee_id
+                            },
+                            beforeSend:function() {
+                                openPageLoader();
+                            },
+                            success : function(response){
+                                responseTosubmitcustomselect(response[0], response[1], response[2], "noform", "tbl_main2", "nomodal");
+                            }
+
+                        });
+                    }else if (actions=="gen_coverpage"){
+
+                        var gen_cover_page = "";
+                        $.ajax({
+                            url : "../actions/s_generate_barcode_act.php",
+                            method : "post",
+                            dataType: "json",
+                            data    : {
+                                gen_cover_page
+                            },
+                            beforeSend:function() {
+                                openPageLoader();
+                            },
+                            success : function(response){
+                                if(response[0] == "error") {
+                                    responseTosubmit2(response[0], response[1] , response[2]);
+                                }else{
+
+                                    var update_print_bc = "";
+                                    var win = window.open(`s_print_generate_barcode.php?barcode=${response[2]}`, "thePopUp", "width=500,height=500");
+                                        win.document.title = 'Generating ... Please Dont Close';
+                                        var pollTimer = window.setInterval(function() {
+                                            if (win.closed !== false) { // !== is required for compatibility with Opera
+                                                window.clearInterval(pollTimer);
+
+                                                setTimeout(function() {        showPrintedCopy(response[2]); }, 1000);
+                                                setTimeout(function() {        location.reload() }, 3000);
+
+                                                responseTosubmit2(response[0], response[1] , response[2]);
+
+
+                                            }
+                                     }, 200);
+
+                                }
+                                // responseTosubmitcustomselect(response[0], response[1], response[2], "noform", "tbl_main2", "nomodal");
+                            }
+
+                        });
+                    
                     }else{
                         responseTosubmit2("error", "Error Found", "Please Reload Page First.");
                     }
@@ -340,75 +380,6 @@
                 });
 
 
-                // var s_table_main    = "";
-                // var s_action        = "";
-                // var s_id            = "";
-  
-
-                // $(document).on('click', '.btn-actions', function(e){
-                //     e.preventDefault();
-                //     var actions = $(this).data('action');
-                //         if(actions =="ADD")
-                //         {
-                //             s_action = actions;
-                //             $("#mdl_main").modal("show");
-                //         }
-                // });
-
-
-                // $("form#frm_main").validate({
-                //     rules: {
-                //         text_1: {
-                //             required : true
-                //         },
-                //         text_2: {
-                //             required : true
-                //         },
-                //     },
-                //     messages: {
-                //         text_1: {
-                //             required    : "Department Code Is Required"
-                //         },
-                //         text_2: {
-                //             required    : "Department Name Is Required"
-                //         },
-                //     },
-                //     errorElement: 'span',
-                //     errorPlacement: function (error, element) {
-                //     error.addClass('invalid-feedback');
-                //     element.closest('.col-md-9').append(error);
-                //     },
-                //         highlight: function (element, errorClass, validClass) {
-                //         $(element).addClass('is-invalid');
-                //     },
-                //         unhighlight: function (element, errorClass, validClass) {
-                //         $(element).removeClass('is-invalid');
-                //     },
-                //     submitHandler: function(form) {
-
-                //         var formData    = new FormData(form);
-                //         formData.append('transaction', "");
-                //         formData.append('action', s_action);
-                //         formData.append('id', s_id);
-                //         $.ajax({
-                //             url         :   form.action,
-                //             type        :   form.method,
-                //             data        :   formData,
-                //             cache       :   false,
-                //             contentType :   false,
-                //             processData :   false,
-                //             dataType    :   "json",
-                //             beforeSend: function(){ 
-                //                 openPageLoader();
-                //             },
-                //             success: function(response) {
-                      
-                //                 responseTosubmit(response[0], response[1], response[2], "frm_main", "tbl_main", "mdl_main");
-                //             }            
-                //         });
-                //     }
-                // });
-
                 var table = $('#tbl_main1').DataTable( {
         
                     'ajax': {
@@ -419,23 +390,50 @@
                         },
                     },
                     'columnDefs': [
-                        { "targets": 5,  "data": null, "defaultContent": "<button class='btn btn-primary edit_btn'> <i class='lar la-edit'></i>Edit</button>" },
+                        { "targets": 5,  "data": null, "defaultContent": "<button class='btn btn-danger delete_btn' data-toggle='tooltip' title='Click to Remove'> Remove</button>" },
                     ],
 
                     'columns': [
               
-                        { data: 'row1' },
-                        { data: 'row2' },
-                        { data: 'row3' },
-                        { data: 'row4' },
-                        { data: 'row5' },
+                        { data: 'row1' , visible : false},
+                        { data: 'row2' , "width" : "5%" },
+                        { data: 'row3' , "width" : "5%"},
+                        { data: 'row4' , "width" : "10%"},
+                        { data: 'row5' , "width" : "50%"},
                     ],
-
-                    // 'order'  :   [[ 0, 'DESC']],
                     "initComplete":function( settings, json){
-                        // closePageLoader();
                     },
                 });
+
+                var table2 = $('#tbl_main2').DataTable( {
+        
+                        'ajax': {
+                            'method' : 'POST',
+                            'url'    :'../actions/s_generate_barcode_act.php',
+                            'data'   : {
+                                            s_table_main2
+                            },
+                        },
+                        'columnDefs': [
+                            { "targets": 4,  "data": null, "defaultContent": "<button class='btn btn-danger delete_btn' data-toggle='tooltip' title='Click to Remove'> Remove</button>" },
+                        ],
+
+                        'columns': [
+                
+                            { data: 'row1'},
+                            { data: 'row2'},
+                            { data: 'row3'},
+                            { data: 'row4'},
+                            // { data: 'row5' , "width" : "50%"},
+                        ],
+                        "initComplete":function( settings, json){
+                            closePageLoader();
+                        },
+                });
+
+
+                
+
                 // $('#tbl_main tbody').on( 'click', '.edit_btn', function () {
                 //     var data = table.row( $(this).parents('tr') ).data();
 
@@ -449,6 +447,33 @@
                     
                 // } );
             });
+
+
+            let deletefirstdb =() => {
+        
+                var deletefirst_tmp = "";
+
+                $.ajax({
+                    url : "../actions/s_generate_barcode_act.php",
+                    method : "post",
+                    dataType : "json",
+                    data : {
+                        deletefirst_tmp 
+                    },
+                    success : function(response) {
+                        // alert(response);
+                    }
+                });
+
+            }
+            
+            let showPrintedCopy = (barcode) => {
+
+                window.open(`pr/${barcode}.pdf`,"popupWindow", "width=900,height=900,scrollbars=yes");
+                $("#mdl_print").modal("hide");
+
+            }
+
         </script>
 </body>
 </html>

@@ -6,7 +6,7 @@
                     <li class="nav-item mobile-menu d-md-none mr-auto"><a class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i class="ft-menu font-large-1"></i></a></li>
 
                     <a class="navbar-brand" href="dashboard"><img class="brand-logo wb_image" alt="Company Logo" src="" width="50">
-                    <h3 class="brand-text">TPBPHL</h3></a>
+                    <h3 class="brand-text">One Cainta</h3></a>
 
 
                         <!-- <img class="wb_image text-center" src="" class="brand-logo"  alt="branding logo" width="50%" "> -->

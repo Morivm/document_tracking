@@ -28,7 +28,7 @@
         $userid         = $_SESSION['user_id']; 
         $userempname    = $_SESSION['user_fullname']; 
         $usedeptcode    = ""; 
-        $userdeptname   = ""; 
+        $userdeptname   = $_SESSION['user_department'];  
         $userrole       = $_SESSION['user_type']; 
     }
 
