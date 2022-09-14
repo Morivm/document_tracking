@@ -1,6 +1,6 @@
 /*
-SQLyog Enterprise v13.1.1 (64 bit)
-MySQL - 10.4.17-MariaDB : Database - doctrack
+SQLyog Trial v13.1.9 (64 bit)
+MySQL - 10.4.24-MariaDB : Database - doctrack
 *********************************************************************
 */
 
@@ -227,6 +227,34 @@ CREATE TABLE `tbl_documents` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `tbl_documents` */
+
+/*Table structure for table `tbl_forum` */
+
+DROP TABLE IF EXISTS `tbl_forum`;
+
+CREATE TABLE `tbl_forum` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `forum_id` varchar(100) DEFAULT NULL,
+  `comment_by` int(11) DEFAULT NULL,
+  `attachment` varchar(200) DEFAULT NULL,
+  `attachment_ext` varchar(20) DEFAULT NULL,
+  `messages` text DEFAULT NULL,
+  `comment_date` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
+
+/*Data for the table `tbl_forum` */
+
+insert  into `tbl_forum`(`id`,`forum_id`,`comment_by`,`attachment`,`attachment_ext`,`messages`,`comment_date`) values 
+(1,'HD11663055100',1,'',NULL,'eow pows','2022-09-14 15:21:52'),
+(2,'HD11663055100',1,'',NULL,'gawa mo','2022-09-14 15:21:58'),
+(3,'HD11663055100',1,'../modules/forum/HD11663055100/HD116630551001_1663146806.jpg','jpg',NULL,'2022-09-14 17:13:26'),
+(4,'HD11663055100',1,'../modules/forum/HD11663055100/HD116630551001_1663147253.jpg','jpg',NULL,'2022-09-14 17:20:53'),
+(5,'HD11663055100',1,'../modules/forum/HD11663055100/HD116630551001_1663147410.jpg','jpg',NULL,'2022-09-14 17:23:30'),
+(6,'HD11663055100',1,'../modules/forum/HD11663055100/HD116630551001_1663147570.jpg','jpg',NULL,'2022-09-14 17:26:10'),
+(7,'HD11663055100',1,'../modules/forum/HD11663055100/HD116630551001_1663147713.jpg','jpg',NULL,'2022-09-14 17:28:33'),
+(8,'HD11663055100',1,'../modules/forum/HD11663055100/HD116630551001_1663149013.jpg','jpg',NULL,'2022-09-14 17:50:13'),
+(9,'HD11663055100',1,'../modules/forum/HD11663055100/HD116630551001_1663149262.jpg','jpg',NULL,'2022-09-14 17:54:22');
 
 /*Table structure for table `tbl_logs` */
 
@@ -760,14 +788,11 @@ DELIMITER $$
 
 /*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_reset`()
 BEGIN
-
-
 		truncate table `search_committees`;
 		TRUNCATE TABLE `search_order_of_business`;
 		TRUNCATE TABLE `tmp_committees`;
 		TRUNCATE TABLE `tmp_order_of_business`;
 		TRUNCATE TABLE `tbl_activities`;
-
 		
 	END */$$
 DELIMITER ;

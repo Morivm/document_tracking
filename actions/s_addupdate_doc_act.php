@@ -57,7 +57,8 @@
             $row2           = $row['row2'];
             $row3           = "Creator: ".$row['row3'];
             $row4           = $row['row4'];
-            $row5           = ($row['row5'] == 1 ) ? "Session On Going <image src='../img/web/circle_green.png' width='10px'> " :  "Session Down <image src='../img/web/circle_red.png' width='10px'>";
+            $row5           = $row['row5'];
+            // $row5           = ($row['row5'] == 1 ) ? "Session On Going <image src='../img/web/circle_green.png' width='10px'> " :  "Session Down <image src='../img/web/circle_red.png' width='10px'>";
             $data[] = array(
                 "row1"=>$row1,
                 "row2"=>$row2,

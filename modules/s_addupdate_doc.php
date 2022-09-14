@@ -277,9 +277,9 @@
                                         s_table_main
                         },
                     },
-                    'columnDefs': [
-                        { "targets": 5,  "data": null, "defaultContent": "<button class='btn btn-primary btn-dl-files'>Download Files</button>" },
-                    ],
+                    // 'columnDefs': [
+                    //     { "targets": 5,  "data": null, "defaultContent": "<button class='btn btn-primary btn-dl-files'>Download Files</button>" },
+                    // ],
 
                     'columns': [
               
@@ -287,8 +287,30 @@
                         { data: 'row2', visible : false },
                         { data: 'row3' },
                         { data: 'row4' },
-                        { data: 'row5' },
-          
+                        {
+                            "className":      'options',
+                            "render": function(data, type, full, meta){
+                                if(full.row5 == 1) {
+                                    return "Session On Going <image src='../img/web/circle_green.png' width='10px'>";
+                                }else{
+                                    return "Session Done <image src='../img/web/circle_red.png' width='10px'>";
+                                }
+                            }
+                        }, 
+                        {
+                            "className":      'options',
+                            "render": function(data, type, full, meta){
+                                var barc = full.row1;
+                                var baraction = `activity.php?activity=${barc}`;
+
+                                if(full.row5 == 1) {
+                                    return "<button class='btn btn-primary btn-dl-files'>View File</button> <button class='btn btn-success btn-gotosession'>Go to Session</button> ";
+                                }else{
+                                    return "<button class='btn btn-primary btn-dl-files'>View File</button>";
+                                }
+                            }
+                        },
+                        
                     ],
 
                     'order'  :   [[ 0, 'DESC']],
@@ -303,23 +325,11 @@
                     var barcode = data['row1'];
               
                     window.open(`s_print_blob_db.php?barcode=${barcode}`);
-
-                    
-
-                    // $.ajax({
-                    //     url : "../actions/s_addupdate_doc_act.php",
-                    //     method : "post",
-                    //     dataType : "json",
-                    //     data : {
-                    //         getFileondb, barcode
-                    //     },
-                    //     success : function (response) {
-                    //         alert(response);
-                    //     }
-
-                    // });
-
-                    
+                } );
+                $('#tbl_main tbody').on( 'click', '.btn-gotosession', function () {
+                    var data = table.row( $(this).parents('tr') ).data();
+                    var barcode = data['row1'];
+                    window.location.replace(`activity.php?red=${makerandom(400)}&&activity=${barcode}&&det=${makerandom(400)}`);
                 } );
             });
 

@@ -6,13 +6,14 @@
 
     $barcode  = $_GET['barcode'];
     $stmt = $conn ->prepare("SELECT uploadId, uploadFile FROM `tblupload` WHERE uploadFileName = :uploadFileName");
-    $stmt->execute(['uploadFileName'=>$barcode]);
+    $stmt->execute(['uploadFileName'=>$barcode.".pdf"]);
     $result = $stmt->fetch();
 
-    header('Content-Disposition: attachment; filename="'.basename($barcode).'"');
+    $fil = $result['uploadFile'];
+
     header('Content-Type: application/pdf');
-    // header ('Content-Length:'.filesize($file));
-    echo readfile($result['uploadFile']);
+    header("Content-Disposition: inline; filename=$barcode.pdf");
+    echo $fil;
 
     $pdo->close();
     exit;
