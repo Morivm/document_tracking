@@ -3,9 +3,9 @@
 
     $conn = $pdo->open();
     
-    if($userrole != "SUPERADMIN") {
-        header("Location: error404"); 
-    }else{
+    // if($userrole != "SUPERADMIN") {
+    //     header("Location: error404"); 
+    // }else{
 
         $session_barcode = $_GET['activity'];
 
@@ -23,7 +23,7 @@
             if ($ftcstmt['created_by'] != $userid) {
 
                 $stmt2 = $conn->prepare("SELECT id FROM search_committees WHERE barcode = :barcode AND userid = :userid");
-                $stmt2->execute(['barcode'=>$barcode , 'userid'=>$userid ]);
+                $stmt2->execute(['barcode'=>$session_barcode , 'userid'=>$userid ]);
                 $countstmt2 = $stmt2->rowCount();
 
                 if($countstmt2 == 0) {
@@ -41,7 +41,7 @@
         }
 
         $pdo->close();
-    }
+    // }
 
 
 

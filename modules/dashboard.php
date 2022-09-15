@@ -24,7 +24,7 @@
             <div class="content-body">
         <section id="ordering">
             <!-- PENDING -->
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
@@ -36,7 +36,7 @@
                                     <table id="tbl1" class="table table-hover table-bordered table-striped tbl1" style="width:100%">
                                         <thead class="cdtheadcolor">
                                             <tr>
-                                                <!-- <th>ID</th> -->
+    
                                                 <th>Barcode</th>
                                                 <th>Document Type</th>
                                                 <th>Document Title</th>
@@ -57,10 +57,10 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- APPROVED -->
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
@@ -87,7 +87,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </section>
             </div>
         </div>

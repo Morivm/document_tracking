@@ -1,9 +1,9 @@
 <?php
     include 'session.php';
 
-    if($userrole != "SUPERADMIN") {
-        header("Location: error404"); 
-    }
+    // if($userrole != "SUPERADMIN") {
+    //     header("Location: error404"); 
+    // }
     include '../includes/header.php';
 ?>
 
@@ -292,8 +292,10 @@
                             "render": function(data, type, full, meta){
                                 if(full.row5 == 1) {
                                     return "Session On Going <image src='../img/web/circle_green.png' width='10px'>";
-                                }else{
+                                }else if(full.row5 == 0) {
                                     return "Session Done <image src='../img/web/circle_red.png' width='10px'>";
+                                }else{
+                                    return "";
                                 }
                             }
                         }, 
@@ -305,8 +307,10 @@
 
                                 if(full.row5 == 1) {
                                     return "<button class='btn btn-primary btn-dl-files'>View File</button> <button class='btn btn-success btn-gotosession'>Go to Session</button> ";
-                                }else{
+                                }else if(full.row5 == 0) {
                                     return "<button class='btn btn-primary btn-dl-files'>View File</button>";
+                                }else{
+                                    return "";
                                 }
                             }
                         },

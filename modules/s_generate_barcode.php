@@ -1,9 +1,9 @@
 <?php
     include 'session.php';
 
-    if($userrole != "SUPERADMIN") {
-        header("Location: error404"); 
-    }
+    // if($userrole != "SUPERADMIN") {
+    //     header("Location: error404"); 
+    // }
     include '../includes/header.php';
 ?>
 

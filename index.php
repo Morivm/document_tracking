@@ -419,13 +419,13 @@
                                     <div class="card-body">
                                         <form class="form-horizontal" method="post" name="frm_login" id="frm_login" action="index_action.php" autocomplete="off" novalidate>
                                             <fieldset class="form-group position-relative has-icon-left">
-                                                <input type="text" class="form-control input-lg" name="txt_username" id="txt_username" placeholder="Username" tabindex="1" value="chris" required data-validation-required-message="Please enter your username.">
+                                                <input type="text" class="form-control input-lg" name="txt_username" id="txt_username" placeholder="Username" tabindex="1" required data-validation-required-message="Please enter your username.">
                                                 <div class="form-control-position">
                                                     <i class="la la-user"></i>
                                                 </div>
                                             </fieldset>
                                             <fieldset class="form-group position-relative has-icon-left">
-                                                <input type="password" class="form-control input-lg" name="txt_password" id="txt_password" placeholder="Password" tabindex="2" value="imppi000046136" required data-validation-required-message="Please enter your password.">
+                                                <input type="password" class="form-control input-lg" name="txt_password" id="txt_password" placeholder="Password" tabindex="2"  required data-validation-required-message="Please enter your password.">
                                                 <div class="form-control-position">
                                                     <i class="la la-key"></i>
                                                 </div>
