@@ -44,14 +44,13 @@
                                     <h4 class="card-title">
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <input type="text" class="form-control" name="txt1_0" id="txt1_0" placeholder="Order of Business Date">
-                                            </div>
+                                                <label class="text-primary font-weight-bold">Order of Business Date</label>
+                                                <input type="date" class="form-control" id="txt1_1" name="txt1_1" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-title="Date Fixed" data-original-title="" title="">
+                                           </div>
                                         </div><br>
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <select class="form-control cls-employees" id="txt1_1" name="txt1_1">
-                                                    <option></option>
-                                                </select>
+                                                <input type="text" class="form-control" id="txt1_2" name="txt1_2">
                                             </div>
                                         </div><br>
                                         <div class="row">
@@ -181,298 +180,318 @@
             $(function(){
 
                 pageLocation("", "li_gen_barcode", "Generate Barcode");
+                closePageLoader();
+                var logined_id = "<?php echo $userid ?>";
+
+                // var dateObj = new Date();
+                // var month = dateObj.getUTCMonth() + 1; 
+                // var day = dateObj.getUTCDate();
+                // var year = dateObj.getUTCFullYear();
+
+                // var test =  newdate = year + "/" + month + "/" + day;
+
+
+
+
+                $("#txt1_1").blur(function(){
+
+                    openPageLoader();
+                    var ordinance_date = $("#txt1_1").val();
+
+                    const d = new Date();
+
+                    var arr = ordinance_date.split("-");
+                    var months = [ "January", "February", "March", "April", "May", "June",
+                        "July", "August", "September", "October", "November", "December" ];
+
+
+                    var month_index =  parseInt(arr[1],10) - 1;
+                    var day_index = parseInt(arr[2],10);
+                    var year_index = parseInt(arr[0],10);
+                    var seconds_index = d.getSeconds();
+
+                    $("#txt1_2").val(`OB${year_index}${month_index}${day_index}${seconds_index}-${logined_id}-0`);
+                    closePageLoader();
+                });
+
+
             
-                getDataSelect2("cls-employees","Select Contract Name","select_contractname");
-                getDataSelect2("cls-orderofbusiness","Select Order of Business","select_orderofbusiness");
-                getDataSelect2("cls-commitee","Select Commitee","select_commitee");
-                getDataSelect2("cls-type-of-person","Select Type","select_type_of_person");
+            //     getDataSelect2("cls-employees","Select Contract Name","select_contractname");
+            //     getDataSelect2("cls-orderofbusiness","Select Order of Business","select_orderofbusiness");
+            //     getDataSelect2("cls-commitee","Select Commitee","select_commitee");
+            //     getDataSelect2("cls-type-of-person","Select Type","select_type_of_person");
 
-                deletefirstdb();
+            //     deletefirstdb();
 
-                var s_table_main1 = "";
-                var s_table_main2 = "";
+            //     var s_table_main1 = "";
+            //     var s_table_main2 = "";
                 
 
-                $(document).on('click', '.btn-actions', function(e){
-                    e.preventDefault();
-                    var actions = $(this).data('action');
+            //     $(document).on('click', '.btn-actions', function(e){
+            //         e.preventDefault();
+            //         var actions = $(this).data('action');
 
-                    if(actions =="generate_barcode"){
+            //         if(actions =="generate_barcode"){
 
-                        var generate_barcode = "";
-                        var userc_id = $("#txt1_1").val();
-                        var typeofperson = $("#txt1_2").val(); 
+            //             var generate_barcode = "";
+            //             var userc_id = $("#txt1_1").val();
+            //             var typeofperson = $("#txt1_2").val(); 
 
-                        $.ajax({
+            //             $.ajax({
 
-                            url         : "../actions/s_generate_barcode_act.php",
-                            method      : "post",
-                            dataType    : "json",
-                            data  : {
-                                generate_barcode,  userc_id, typeofperson
+            //                 url         : "../actions/s_generate_barcode_act.php",
+            //                 method      : "post",
+            //                 dataType    : "json",
+            //                 data  : {
+            //                     generate_barcode,  userc_id, typeofperson
                                 
-                            },
-                            beforeSend : function(){
-                                openPageLoader();
-                            },
-                            success : function(response) {
-                                closePageLoader();
+            //                 },
+            //                 beforeSend : function(){
+            //                     openPageLoader();
+            //                 },
+            //                 success : function(response) {
+            //                     closePageLoader();
                             
-                                if(response[0] == "error") {
-                                    responseTosubmit2(response[0], response[1] , response[2]);
-                                }else{
+            //                     if(response[0] == "error") {
+            //                         responseTosubmit2(response[0], response[1] , response[2]);
+            //                     }else{
 
-                                    var update_print_bc = "";
-                                    var win = window.open(`s_print_generate_barcode.php?ids=${response[2]}`, "thePopUp", "width=500,height=500");
-                                        win.document.title = 'Generating ... Please Dont Close';
-                                        var pollTimer = window.setInterval(function() {
-                                            if (win.closed !== false) { // !== is required for compatibility with Opera
-                                                window.clearInterval(pollTimer);
-                                            $.ajax({
-                                                url     : "../actions/s_generate_barcode_act.php",
-                                                method  : "post",
-                                                dataType : "json",
-                                                data : {
-                                                    update_print_bc
-                                                },
-                                                success : function (response) {
-                                                    console.log(response);
-                                                    if(response[0] =="success") {
-                                                        location.reload();
-                                                    }else{
-                                                        responseTosubmit2(response[0], response[1] , response[2]);
-                                                    }
-                                                }
+            //                         var update_print_bc = "";
+            //                         var win = window.open(`s_print_generate_barcode.php?ids=${response[2]}`, "thePopUp", "width=500,height=500");
+            //                             win.document.title = 'Generating ... Please Dont Close';
+            //                             var pollTimer = window.setInterval(function() {
+            //                                 if (win.closed !== false) { // !== is required for compatibility with Opera
+            //                                     window.clearInterval(pollTimer);
+            //                                 $.ajax({
+            //                                     url     : "../actions/s_generate_barcode_act.php",
+            //                                     method  : "post",
+            //                                     dataType : "json",
+            //                                     data : {
+            //                                         update_print_bc
+            //                                     },
+            //                                     success : function (response) {
+            //                                         console.log(response);
+            //                                         if(response[0] =="success") {
+            //                                             location.reload();
+            //                                         }else{
+            //                                             responseTosubmit2(response[0], response[1] , response[2]);
+            //                                         }
+            //                                     }
 
-                                            });
+            //                                 });
 
-                                            }
-                                     }, 200);
+            //                                 }
+            //                          }, 200);
 
-                                }
-                            }
+            //                     }
+            //                 }
 
-                        });
+            //             });
 
-                    }else if(actions == "add_order_business") {
-                        e.preventDefault();
+            //         }else if(actions == "add_order_business") {
+            //             e.preventDefault();
                         
-                        var create_order_of_busineess = "";
-                        var order_business_id   = $("#txt1_2").val();
-                        var order_title         = $("#text1_3").val();
-                        var order_ordinance_code= $("#text1_4").val();
-                        var order_description   = $("#text1_5").val();
-                        var barcode             = "fafdsafdafdafdfadf";
+            //             var create_order_of_busineess = "";
+            //             var order_business_id   = $("#txt1_2").val();
+            //             var order_title         = $("#text1_3").val();
+            //             var order_ordinance_code= $("#text1_4").val();
+            //             var order_description   = $("#text1_5").val();
+            //             var barcode             = "fafdsafdafdafdfadf";
 
-                        $.ajax({
-                            url : "../actions/s_generate_barcode_act.php",
-                            method : "post",
-                            dataType: "json",
-                            data : {
-                                barcode,
-                                create_order_of_busineess,
-                                order_business_id,
-                                order_title,
-                                order_ordinance_code,
-                                order_description
-                            },
-                            beforeSend:function() {
-                                openPageLoader();
-                            },
-                            success : function(response){
-                                responseTosubmitcustomselect(response[0], response[1], response[2], "noform", "tbl_main1", "nomodal");
-                            }
+            //             $.ajax({
+            //                 url : "../actions/s_generate_barcode_act.php",
+            //                 method : "post",
+            //                 dataType: "json",
+            //                 data : {
+            //                     barcode,
+            //                     create_order_of_busineess,
+            //                     order_business_id,
+            //                     order_title,
+            //                     order_ordinance_code,
+            //                     order_description
+            //                 },
+            //                 beforeSend:function() {
+            //                     openPageLoader();
+            //                 },
+            //                 success : function(response){
+            //                     responseTosubmitcustomselect(response[0], response[1], response[2], "noform", "tbl_main1", "nomodal");
+            //                 }
 
-                        });
+            //             });
                     
-                    }else if (actions == "addcommitee") {
+            //         }else if (actions == "addcommitee") {
                         
-                        var create_commitees = "";
-                        var committee_id = $("#txt1_6").val();
+            //             var create_commitees = "";
+            //             var committee_id = $("#txt1_6").val();
 
-                        $.ajax({
-                            url : "../actions/s_generate_barcode_act.php",
-                            method : "post",
-                            dataType: "json",
-                            data    : {
-                                create_commitees, committee_id
-                            },
-                            beforeSend:function() {
-                                openPageLoader();
-                            },
-                            success : function(response){
-                                responseTosubmitcustomselect(response[0], response[1], response[2], "noform", "tbl_main2", "nomodal");
-                            }
+            //             $.ajax({
+            //                 url : "../actions/s_generate_barcode_act.php",
+            //                 method : "post",
+            //                 dataType: "json",
+            //                 data    : {
+            //                     create_commitees, committee_id
+            //                 },
+            //                 beforeSend:function() {
+            //                     openPageLoader();
+            //                 },
+            //                 success : function(response){
+            //                     responseTosubmitcustomselect(response[0], response[1], response[2], "noform", "tbl_main2", "nomodal");
+            //                 }
 
-                        });
-                    }else if (actions=="gen_coverpage"){
+            //             });
+            //         }else if (actions=="gen_coverpage"){
 
-                        var gen_cover_page = "";
-                        $.ajax({
-                            url : "../actions/s_generate_barcode_act.php",
-                            method : "post",
-                            dataType: "json",
-                            data    : {
-                                gen_cover_page
-                            },
-                            beforeSend:function() {
-                                openPageLoader();
-                            },
-                            success : function(response){
-                                if(response[0] == "error") {
-                                    responseTosubmit2(response[0], response[1] , response[2]);
-                                }else{
+            //             var gen_cover_page = "";
+            //             $.ajax({
+            //                 url : "../actions/s_generate_barcode_act.php",
+            //                 method : "post",
+            //                 dataType: "json",
+            //                 data    : {
+            //                     gen_cover_page
+            //                 },
+            //                 beforeSend:function() {
+            //                     openPageLoader();
+            //                 },
+            //                 success : function(response){
+            //                     if(response[0] == "error") {
+            //                         responseTosubmit2(response[0], response[1] , response[2]);
+            //                     }else{
 
-                                    var update_print_bc = "";
-                                    var win = window.open(`s_print_generate_barcode.php?barcode=${response[2]}`, "thePopUp", "width=500,height=500");
-                                        win.document.title = 'Generating ... Please Dont Close';
-                                        var pollTimer = window.setInterval(function() {
-                                            if (win.closed !== false) { // !== is required for compatibility with Opera
-                                                window.clearInterval(pollTimer);
+            //                         var update_print_bc = "";
+            //                         var win = window.open(`s_print_generate_barcode.php?barcode=${response[2]}`, "thePopUp", "width=500,height=500");
+            //                             win.document.title = 'Generating ... Please Dont Close';
+            //                             var pollTimer = window.setInterval(function() {
+            //                                 if (win.closed !== false) { // !== is required for compatibility with Opera
+            //                                     window.clearInterval(pollTimer);
 
-                                                setTimeout(function() {        showPrintedCopy(response[2]); }, 1000);
-                                                setTimeout(function() {        location.reload() }, 3000);
+            //                                     setTimeout(function() {        showPrintedCopy(response[2]); }, 1000);
+            //                                     setTimeout(function() {        location.reload() }, 3000);
 
-                                                responseTosubmit2(response[0], response[1] , response[2]);
+            //                                     responseTosubmit2(response[0], response[1] , response[2]);
 
 
-                                            }
-                                     }, 200);
+            //                                 }
+            //                          }, 200);
 
-                                }
-                                // responseTosubmitcustomselect(response[0], response[1], response[2], "noform", "tbl_main2", "nomodal");
-                            }
+            //                     }
+            //                     // responseTosubmitcustomselect(response[0], response[1], response[2], "noform", "tbl_main2", "nomodal");
+            //                 }
 
-                        });
+            //             });
                     
-                    }else{
-                        responseTosubmit2("error", "Error Found", "Please Reload Page First.");
-                    }
-                });
+            //         }else{
+            //             responseTosubmit2("error", "Error Found", "Please Reload Page First.");
+            //         }
+            //     });
             
 
                 
 
 
-                $(document.body).on("change","#txt1_1",function(){
-                    var x =  this.value;
-                    var get_forms = "";
-                    $.ajax({
-                        url : "../actions/s_generate_barcode_act.php",
-                        method : "post",
-                        dataType : "json",
-                        data : {
-                            get_forms , x
-                        },
-                        beforeSend : function () {
-                            $("#results_forms").html("");
-                        },
-                        success : function(response) {
-                            console.log(response);
-                            if(response[0] == "error") {
-                                $("#results_forms").html("");
-                            }else{
-                                $("#results_forms").html(response);
-                            }
+            //     $(document.body).on("change","#txt1_1",function(){
+            //         var x =  this.value;
+            //         var get_forms = "";
+            //         $.ajax({
+            //             url : "../actions/s_generate_barcode_act.php",
+            //             method : "post",
+            //             dataType : "json",
+            //             data : {
+            //                 get_forms , x
+            //             },
+            //             beforeSend : function () {
+            //                 $("#results_forms").html("");
+            //             },
+            //             success : function(response) {
+            //                 console.log(response);
+            //                 if(response[0] == "error") {
+            //                     $("#results_forms").html("");
+            //                 }else{
+            //                     $("#results_forms").html(response);
+            //                 }
                             
-                        }
-                    });
-                });
+            //             }
+            //         });
+            //     });
 
 
-                var table = $('#tbl_main1').DataTable( {
+            //     var table = $('#tbl_main1').DataTable( {
         
-                    'ajax': {
-                        'method' : 'POST',
-                        'url'    :'../actions/s_generate_barcode_act.php',
-                        'data'   : {
-                                        s_table_main1
-                        },
-                    },
-                    'columnDefs': [
-                        { "targets": 5,  "data": null, "defaultContent": "<button class='btn btn-danger delete_btn' data-toggle='tooltip' title='Click to Remove'> Remove</button>" },
-                    ],
+            //         'ajax': {
+            //             'method' : 'POST',
+            //             'url'    :'../actions/s_generate_barcode_act.php',
+            //             'data'   : {
+            //                             s_table_main1
+            //             },
+            //         },
+            //         'columnDefs': [
+            //             { "targets": 5,  "data": null, "defaultContent": "<button class='btn btn-danger delete_btn' data-toggle='tooltip' title='Click to Remove'> Remove</button>" },
+            //         ],
 
-                    'columns': [
+            //         'columns': [
               
-                        { data: 'row1' , visible : false},
-                        { data: 'row2' , "width" : "5%" },
-                        { data: 'row3' , "width" : "5%"},
-                        { data: 'row4' , "width" : "10%"},
-                        { data: 'row5' , "width" : "50%"},
-                    ],
-                    "initComplete":function( settings, json){
-                    },
-                });
+            //             { data: 'row1' , visible : false},
+            //             { data: 'row2' , "width" : "5%" },
+            //             { data: 'row3' , "width" : "5%"},
+            //             { data: 'row4' , "width" : "10%"},
+            //             { data: 'row5' , "width" : "50%"},
+            //         ],
+            //         "initComplete":function( settings, json){
+            //         },
+            //     });
 
-                var table2 = $('#tbl_main2').DataTable( {
+            //     var table2 = $('#tbl_main2').DataTable( {
         
-                        'ajax': {
-                            'method' : 'POST',
-                            'url'    :'../actions/s_generate_barcode_act.php',
-                            'data'   : {
-                                            s_table_main2
-                            },
-                        },
-                        'columnDefs': [
-                            { "targets": 4,  "data": null, "defaultContent": "<button class='btn btn-danger delete_btn' data-toggle='tooltip' title='Click to Remove'> Remove</button>" },
-                        ],
+            //             'ajax': {
+            //                 'method' : 'POST',
+            //                 'url'    :'../actions/s_generate_barcode_act.php',
+            //                 'data'   : {
+            //                                 s_table_main2
+            //                 },
+            //             },
+            //             'columnDefs': [
+            //                 { "targets": 4,  "data": null, "defaultContent": "<button class='btn btn-danger delete_btn' data-toggle='tooltip' title='Click to Remove'> Remove</button>" },
+            //             ],
 
-                        'columns': [
+            //             'columns': [
                 
-                            { data: 'row1'},
-                            { data: 'row2'},
-                            { data: 'row3'},
-                            { data: 'row4'},
-                            // { data: 'row5' , "width" : "50%"},
-                        ],
-                        "initComplete":function( settings, json){
-                            closePageLoader();
-                        },
-                });
+            //                 { data: 'row1'},
+            //                 { data: 'row2'},
+            //                 { data: 'row3'},
+            //                 { data: 'row4'},
+            //                 // { data: 'row5' , "width" : "50%"},
+            //             ],
+            //             "initComplete":function( settings, json){
+            //                 closePageLoader();
+            //             },
+            //     });
 
-
-                
-
-                // $('#tbl_main tbody').on( 'click', '.edit_btn', function () {
-                //     var data = table.row( $(this).parents('tr') ).data();
-
-                //     s_id = data['row1'];
-                //     s_action = "UPDATE";
-                //     $("#text_1").val(data['row2']);
-                //     $("#text_2").val(data['row3']);
-              
-
-                //     $("#mdl_main").modal("show");
-                    
-                // } );
             });
 
 
-            let deletefirstdb =() => {
+            // let deletefirstdb =() => {
         
-                var deletefirst_tmp = "";
+            //     var deletefirst_tmp = "";
 
-                $.ajax({
-                    url : "../actions/s_generate_barcode_act.php",
-                    method : "post",
-                    dataType : "json",
-                    data : {
-                        deletefirst_tmp 
-                    },
-                    success : function(response) {
-                        // alert(response);
-                    }
-                });
+            //     $.ajax({
+            //         url : "../actions/s_generate_barcode_act.php",
+            //         method : "post",
+            //         dataType : "json",
+            //         data : {
+            //             deletefirst_tmp 
+            //         },
+            //         success : function(response) {
+            //             // alert(response);
+            //         }
+            //     });
 
-            }
+            // }
             
-            let showPrintedCopy = (barcode) => {
+            // let showPrintedCopy = (barcode) => {
 
-                window.open(`pr/${barcode}.pdf`,"popupWindow", "width=900,height=900,scrollbars=yes");
-                $("#mdl_print").modal("hide");
+            //     window.open(`pr/${barcode}.pdf`,"popupWindow", "width=900,height=900,scrollbars=yes");
+            //     $("#mdl_print").modal("hide");
 
-            }
+            // }
 
         </script>
 </body>
