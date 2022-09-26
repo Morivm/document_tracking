@@ -44,13 +44,13 @@
                                     <h4 class="card-title">
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <label class="text-primary font-weight-bold">Order of Business Date</label>
+                                                <label class="text-primary font-weight-bold"><span class="text-danger">* </span>Order of Business Date</label>
                                                 <input type="date" class="form-control" id="txt1_1" name="txt1_1" data-toggle="tooltip" data-trigger="hover" data-placement="top" data-title="Date Fixed" data-original-title="" title="">
                                            </div>
                                         </div><br>
                                         <div class="row">
                                             <div class="col-md-3">
-                                                <input type="text" class="form-control" id="txt1_2" name="txt1_2">
+                                                <input type="text" class="form-control d-none" id="txt1_11" name="txt1_11" placeholder="Generated Barcode" data-toggle="tooltip" title="Generated Barcode" readonly>
                                             </div>
                                         </div><br>
                                         <div class="row">
@@ -61,20 +61,20 @@
 
                                         <hr>
 
-                                        <label class="text-primary font-weight-bold">Order of Business</label>
+                                        <label class="text-primary font-weight-bold"><span class="text-danger">* </span>Order of Business </label>
                                         <div class="row">
                                             <div class="col-md-3">
 
                                                 <select class="form-control cls-orderofbusiness select2-custom" id="txt1_2" name="txt1_2">
                                                     <option></option>
                                                 </select>
-                                                <br><br>
-
-                                                <input type="text" class="form-control textfield-custom" name="text1_3" id="text1_3" placeholder="Title">
                                                 <br>
 
-                                                <input type="text" class="form-control textfield-custom" name="text1_4" id="text1_4" placeholder="Ordinance Code/ Referrence No.">
+                                                <input type="text" class="form-control textfield-custom d-none" name="text1_3" id="text1_3">
                                                 <br>
+
+                                                <!-- <input type="text" class="form-control textfield-custom" name="text1_4" id="text1_4" placeholder="Ordinance Code/ Referrence No.">
+                                                <br> -->
 
                                                 <textarea class="form-control textfield-custom" name="text1_5" id="text1_5" cols="30" rows="5" placeholder="Description"></textarea>
                                                 <br>
@@ -84,13 +84,11 @@
 
                                             <div class="col-md-9">
                                                 <div class="table-responsive">
-                                                    <table class="table table-bordered table-hover table-stripped tbl_main1"  id="tbl_main1">
+                                                    <table class="table table-bordered table-hover table-stripped tbl_main1 dt_fwidth"  id="tbl_main1" >
                                                         <thead style="background-color:#1E9FF2 ; color:white">
                                                             <tr>
                                                                 <th scope="col">#</th>
                                                                 <th scope="col">Order of Business</th>
-                                                                <th scope="col">Title</th>
-                                                                <th scope="col">Ordinance Code/ Ref No.</th>
                                                                 <th scope="col">Description</th>
                                                                 <th scope="col">Action</th>
                                                             </tr>
@@ -104,7 +102,7 @@
 
                                         <!-- ============================================COMMITTEE -->
 
-                                        <hr>
+                                        <!-- <hr>
 
                                         <label class="text-primary font-weight-bold">Committee</label>
                            
@@ -135,7 +133,7 @@
                                             </div>
 
 
-                                        </div>
+                                        </div> -->
                             
                                         <br>
                                         <button type="button" class="btn btn-success pull-right btn-actions" data-action="gen_coverpage">Generatate Cover Page</button>
@@ -181,16 +179,11 @@
 
                 pageLocation("", "li_gen_barcode", "Generate Barcode");
                 closePageLoader();
-                var logined_id = "<?php echo $userid ?>";
-
-                // var dateObj = new Date();
-                // var month = dateObj.getUTCMonth() + 1; 
-                // var day = dateObj.getUTCDate();
-                // var year = dateObj.getUTCFullYear();
-
-                // var test =  newdate = year + "/" + month + "/" + day;
+                var logined_id      = "<?php echo $userid ?>";
+                var s_table_main1   = "";
 
 
+                removeTempTable();
 
 
                 $("#txt1_1").blur(function(){
@@ -210,14 +203,23 @@
                     var year_index = parseInt(arr[0],10);
                     var seconds_index = d.getSeconds();
 
-                    $("#txt1_2").val(`OB${year_index}${month_index}${day_index}${seconds_index}-${logined_id}-0`);
+
+                    if(ordinance_date == "") {
+                        $("#txt1_11").val("");
+                        $("#txt1_11").addClass("d-none");
+                    }else{
+                        $("#txt1_11").removeClass("d-none");
+                        $("#txt1_11").val(`OB${year_index}${month_index}${day_index}${seconds_index}-${logined_id}`);
+                    }
+                    $("#txt1_2").val("").trigger("change");
+
                     closePageLoader();
                 });
 
 
             
             //     getDataSelect2("cls-employees","Select Contract Name","select_contractname");
-            //     getDataSelect2("cls-orderofbusiness","Select Order of Business","select_orderofbusiness");
+                getDataSelect2("cls-orderofbusiness","Select Order of Business","select_orderofbusiness");
             //     getDataSelect2("cls-commitee","Select Commitee","select_commitee");
             //     getDataSelect2("cls-type-of-person","Select Type","select_type_of_person");
 
@@ -227,9 +229,83 @@
             //     var s_table_main2 = "";
                 
 
-            //     $(document).on('click', '.btn-actions', function(e){
-            //         e.preventDefault();
-            //         var actions = $(this).data('action');
+            var table = $('#tbl_main1').DataTable( {
+                "ordering" : false,
+                "destroy"  : true,
+                'ajax': {
+                    'method' : 'POST',
+                    'url'    :'../actions/s_generate_barcode_act.php',
+                    'data'   : {
+                                    s_table_main1
+                    },
+                },
+                'columnDefs': [
+                    { "targets": 3,  "data": null, "defaultContent": "<button class='btn btn-danger delete_btn' data-toggle='tooltip' title='Click to Remove'><i class='las la-trash'></i></button> <button class='btn btn-warning edit_btn' data-toggle='tooltip' title='Click to Edit'><i class='las la-edit'></i></button>" },
+                ],
+
+                'columns': [
+            
+                    { data: 'row1', "visible" :false },
+                    { data: 'row2', "width" : "20%" },
+                    { data: 'row3', "width" : "70%" },
+                ],
+                "initComplete":function( settings, json){
+                },
+            });
+            $('#tbl_main1 tbody').on( 'click', '.delete_btn', function (e) {
+                e.preventDefault();
+                var data = table.row( $(this).parents('tr') ).data();
+                var delete_on_tmp ="";
+                var id = data['row1'];
+                var order_of_business_code  = $("#txt1_11").val();
+                var order_of_business_id    = $("#txt1_2").val();
+                
+                $.ajax({
+                    url : "../actions/s_generate_barcode_act.php",
+                    method : "post",
+                    dataType: "json",
+                    data : {
+                        delete_on_tmp,
+                        id,
+                        order_of_business_code,
+                        order_of_business_id
+                    },
+                    beforeSend:function() {
+                        openPageLoader();
+                    },
+                    success : function(response){
+                        responseTosubmit(response[0], response[1], response[2], "noform", "tbl_main1", "nomodal");
+                        if(response[0] == "success") {
+                            $("#text1_3").val(response[3]);
+                            $("#text1_5").val(`${response[3]}. `);
+                        }
+                    }
+                });
+
+
+                // $("#text_1").val(data['row2'].split(',')[0]);
+                // $("#text_2").val($.trim(data['row2'].split(',')[1]));
+                // $("#text_3").val(data['row3']).trigger("change");
+                // $("#text_4").val(data['row6']);
+                // $("#text_5").val(data['row7']);
+
+                // s_getEmail = data['row6'];
+                // s_getMobile= data['row7'];
+                // s_id = data['row1'];
+                // s_action = "UPDATE";
+                // $("#mdl_main").modal("show");
+                
+            });
+
+
+
+
+
+
+
+                $(document).on('click', '.btn-actions', function(e){
+                    e.preventDefault();
+                    var actions = $(this).data('action');
 
             //         if(actions =="generate_barcode"){
 
@@ -288,36 +364,58 @@
 
             //             });
 
-            //         }else if(actions == "add_order_business") {
-            //             e.preventDefault();
-                        
-            //             var create_order_of_busineess = "";
-            //             var order_business_id   = $("#txt1_2").val();
-            //             var order_title         = $("#text1_3").val();
-            //             var order_ordinance_code= $("#text1_4").val();
-            //             var order_description   = $("#text1_5").val();
-            //             var barcode             = "fafdsafdafdafdfadf";
+            //         }else 
+                if(actions == "add_order_business") {
+                    e.preventDefault();
+                    
+                    var create_order_of_busineess = "";
+                    var order_business_id       = $("#txt1_2").val();
+                    var order_business_code     = $("#txt1_11").val();
+                    var order_description       = $("#text1_5").val();
+                    var ordering                = $("#text1_3").val();
 
-            //             $.ajax({
-            //                 url : "../actions/s_generate_barcode_act.php",
-            //                 method : "post",
-            //                 dataType: "json",
-            //                 data : {
-            //                     barcode,
-            //                     create_order_of_busineess,
-            //                     order_business_id,
-            //                     order_title,
-            //                     order_ordinance_code,
-            //                     order_description
-            //                 },
-            //                 beforeSend:function() {
-            //                     openPageLoader();
-            //                 },
-            //                 success : function(response){
-            //                     responseTosubmitcustomselect(response[0], response[1], response[2], "noform", "tbl_main1", "nomodal");
-            //                 }
 
-            //             });
+                    if(order_business_code == "") {
+
+                        responseTosubmit2("error", "Please Select Order of Business Date First.", "Order of Business Date is Required.");
+                        $("#txt1_1").focus();
+                    }else{
+                        if(order_business_id == "") {
+                            responseTosubmit2("error",  "Please Select Order of Business.", "Order of Business Is Required");
+                            $("#txt1_2").focus();
+                            
+                        }else  if(ordering == "") {
+                            responseTosubmit2("error",  "Please Clear Order of Business", "Order of Business Is Required");
+                        }else {
+                            $.ajax({
+                                url : "../actions/s_generate_barcode_act.php",
+                                method : "post",
+                                dataType: "json",
+                                data : {
+                                    create_order_of_busineess,
+                                    order_business_id,
+                                    order_business_code,
+                                    order_description,
+                                    ordering
+                                },
+                                beforeSend:function() {
+                                    openPageLoader();
+                                },
+                                success : function(response){
+                                    closePageLoader();
+                                    // alert(response);
+                                    // responseTosubmitcustomselect(response[0], response[1], response[2], "noform", "tbl_main1", "nomodal");
+                                    if(response[0] =="success") {
+                                        $("#text1_3").val(response[3]);
+                                        $("#text1_5").val(`${response[3]}. `);
+                                        responseTosubmit(response[0], response[1], response[2], "noform", "tbl_main1", "nomodal");
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+                }
                     
             //         }else if (actions == "addcommitee") {
                         
@@ -339,53 +437,88 @@
             //                 }
 
             //             });
-            //         }else if (actions=="gen_coverpage"){
+                else if (actions=="gen_coverpage"){
+                        var gen_cover_page = "";
+                        var order_of_business_code = $("#txt1_11").val();
+                        var order_of_business_date = $("#txt1_1").val();
+     
+                        $.ajax({
+                            url : "../actions/s_generate_barcode_act.php",
+                            method : "post",
+                            dataType: "json",
+                            data    : {
+                                gen_cover_page, order_of_business_code, order_of_business_date
+                            },
+                            beforeSend:function() {
+                                openPageLoader();
+                            },
+                            success : function(response){
+                                console.log(response);
+                                if(response[0] == "error") {
+                                    responseTosubmit2(response[0], response[1] , response[2]);
+                                }else{
 
-            //             var gen_cover_page = "";
-            //             $.ajax({
-            //                 url : "../actions/s_generate_barcode_act.php",
-            //                 method : "post",
-            //                 dataType: "json",
-            //                 data    : {
-            //                     gen_cover_page
-            //                 },
-            //                 beforeSend:function() {
-            //                     openPageLoader();
-            //                 },
-            //                 success : function(response){
-            //                     if(response[0] == "error") {
-            //                         responseTosubmit2(response[0], response[1] , response[2]);
-            //                     }else{
+                                    var update_print_bc = "";
+                                    var win = window.open(`s_print_generate_barcode.php?barcode=${response[3]}`, "thePopUp", "width=500,height=500");
+                                        win.document.title = 'Generating ... Please Dont Close';
+                                        var pollTimer = window.setInterval(function() {
+                                            if (win.closed !== false) {
+                                                window.clearInterval(pollTimer);
+                                                
+                                                setTimeout(function() {        showPrintedCopy(response[3]); }, 1000);
+                                                setTimeout(function() {        location.reload() }, 3000);
 
-            //                         var update_print_bc = "";
-            //                         var win = window.open(`s_print_generate_barcode.php?barcode=${response[2]}`, "thePopUp", "width=500,height=500");
-            //                             win.document.title = 'Generating ... Please Dont Close';
-            //                             var pollTimer = window.setInterval(function() {
-            //                                 if (win.closed !== false) { // !== is required for compatibility with Opera
-            //                                     window.clearInterval(pollTimer);
+                                                responseTosubmit2(response[0], response[1] , response[2]);
+                                            }
+                                     }, 200);
 
-            //                                     setTimeout(function() {        showPrintedCopy(response[2]); }, 1000);
-            //                                     setTimeout(function() {        location.reload() }, 3000);
+                                }
+                            }
 
-            //                                     responseTosubmit2(response[0], response[1] , response[2]);
-
-
-            //                                 }
-            //                          }, 200);
-
-            //                     }
-            //                     // responseTosubmitcustomselect(response[0], response[1], response[2], "noform", "tbl_main2", "nomodal");
-            //                 }
-
-            //             });
+                        });
                     
-            //         }else{
-            //             responseTosubmit2("error", "Error Found", "Please Reload Page First.");
-            //         }
-            //     });
+                    }else{
+                        responseTosubmit2("error", "Error Found", "Please Reload Page First.");
+                    }
+                });
             
 
-                
+            
+        $(document.body).on("change","#txt1_2",function(e){
+            e.preventDefault();
+            var getlastidofbusiness     = "";
+            var order_of_business_id    = $(this).val();
+            var order_of_business_code    = $("#txt1_11").val();
+            
+
+            if(order_of_business_code =="") {
+                responseTosubmit2("error", "Please Select Order of Business date first.", "Order of Business Date is Required.");
+            }else{
+                $.ajax({
+                    url : "../actions/s_generate_barcode_act.php",
+                    method : "post",
+                    dataType : "json",
+                    data : {
+                        getlastidofbusiness , order_of_business_id, order_of_business_code
+                    },
+                    beforeSend : function () {
+                        openPageLoader();
+                        $("#text1_5").val("");
+                    },
+                    success : function(response) {
+                        closePageLoader();
+                        if(response[0] == "success") {
+                            $("#text1_3").val(`${response[2]}`);
+                            $("#text1_5").val(`${response[2]}. `);
+                        }else{
+                            $("#text1_3").val("");
+                            $("#text1_5").val("");
+                        }
+                        
+                    }
+                });
+            }
+        });
 
 
             //     $(document.body).on("change","#txt1_1",function(){
@@ -414,30 +547,7 @@
             //     });
 
 
-            //     var table = $('#tbl_main1').DataTable( {
-        
-            //         'ajax': {
-            //             'method' : 'POST',
-            //             'url'    :'../actions/s_generate_barcode_act.php',
-            //             'data'   : {
-            //                             s_table_main1
-            //             },
-            //         },
-            //         'columnDefs': [
-            //             { "targets": 5,  "data": null, "defaultContent": "<button class='btn btn-danger delete_btn' data-toggle='tooltip' title='Click to Remove'> Remove</button>" },
-            //         ],
-
-            //         'columns': [
-              
-            //             { data: 'row1' , visible : false},
-            //             { data: 'row2' , "width" : "5%" },
-            //             { data: 'row3' , "width" : "5%"},
-            //             { data: 'row4' , "width" : "10%"},
-            //             { data: 'row5' , "width" : "50%"},
-            //         ],
-            //         "initComplete":function( settings, json){
-            //         },
-            //     });
+           
 
             //     var table2 = $('#tbl_main2').DataTable( {
         
@@ -468,6 +578,31 @@
             });
 
 
+            let removeTempTable = () => {
+
+                var deletefirst_tmp = "";
+                $.ajax({
+                    url : "../actions/s_generate_barcode_act.php",
+                    method : "post",
+                    dataType : "json",
+                    data : {
+                        deletefirst_tmp 
+                    },
+                    beforeSend : function () {
+                        openPageLoader();
+                    },
+                    success : function(response) {
+                        closePageLoader();
+                        if(response[0] =="error") {
+                            responseTosubmit2(response[0], response[1], response[2]);
+                        }
+                    }
+                });
+
+            }
+
+
+
             // let deletefirstdb =() => {
         
             //     var deletefirst_tmp = "";
@@ -486,12 +621,11 @@
 
             // }
             
-            // let showPrintedCopy = (barcode) => {
+            let showPrintedCopy = (barcode) => {
+                window.open(`pr/${barcode}.pdf`,"popupWindow", "width=900,height=900,scrollbars=yes");
+                $("#mdl_print").modal("hide");
 
-            //     window.open(`pr/${barcode}.pdf`,"popupWindow", "width=900,height=900,scrollbars=yes");
-            //     $("#mdl_print").modal("hide");
-
-            // }
+            }
 
         </script>
 </body>
