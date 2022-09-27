@@ -453,7 +453,7 @@
                                 openPageLoader();
                             },
                             success : function(response){
-                                console.log(response);
+                                // alert(response);
                                 if(response[0] == "error") {
                                     responseTosubmit2(response[0], response[1] , response[2]);
                                 }else{

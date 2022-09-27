@@ -10,35 +10,36 @@
         $session_barcode = $_GET['activity'];
 
 
-        $stmt = $conn->prepare("SELECT id, created_by, isAvailable FROM tbl_activities WHERE barcode = :barcode"); 
-        $stmt->execute(['barcode'=>$session_barcode]);
+        $stmt = $conn->prepare("SELECT row1 FROM vw_search_order_of_business WHERE row3 = :row3"); 
+        $stmt->execute(['row3'=>$session_barcode]);
         $countstmt = $stmt->rowCount();
 
         if($countstmt == 0) {
 
             header("Location: error404"); 
-        }else {
-            $ftcstmt = $stmt->fetch();
-
-            if ($ftcstmt['created_by'] != $userid) {
-
-                $stmt2 = $conn->prepare("SELECT id FROM search_committees WHERE barcode = :barcode AND userid = :userid");
-                $stmt2->execute(['barcode'=>$session_barcode , 'userid'=>$userid ]);
-                $countstmt2 = $stmt2->rowCount();
-
-                if($countstmt2 == 0) {
-                    header("Location: error404"); 
-                }
-
-
-            }else {
-
-                if( $ftcstmt['isAvailable'] == 0 ){ 
-                    header("Location: error404"); 
-                }
-            }
-
         }
+        // else {
+        //     $ftcstmt = $stmt->fetch();
+
+        //     if ($ftcstmt['created_by'] != $userid) {
+
+        //         $stmt2 = $conn->prepare("SELECT id FROM search_committees WHERE barcode = :barcode AND userid = :userid");
+        //         $stmt2->execute(['barcode'=>$session_barcode , 'userid'=>$userid ]);
+        //         $countstmt2 = $stmt2->rowCount();
+
+        //         if($countstmt2 == 0) {
+        //             header("Location: error404"); 
+        //         }
+
+
+        //     }else {
+
+        //         if( $ftcstmt['isAvailable'] == 0 ){ 
+        //             header("Location: error404"); 
+        //         }
+        //     }
+
+        // }
 
         $pdo->close();
     // }
@@ -168,8 +169,8 @@
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <?php 
-                                                        $stmt3 = $conn->prepare("SELECT *, func_fullname(created_by) as creator, func_Dateformat(created_date, 3) as date_created FROM `tbl_activities` WHERE barcode = :barcode");
-                                                        $stmt3->execute(['barcode'=>$session_barcode]);
+                                                        $stmt3 = $conn->prepare("SELECT * FROM vw_search_order_of_business WHERE row3 = :row3");
+                                                        $stmt3->execute(['row3'=>$session_barcode]);
                                                         $countstmt3 = $stmt3->rowCount();
 
                                                         if($countstmt3 == 0) {
@@ -178,26 +179,28 @@
 
                                                         }else {
                                                             $ftcstmt3 = $stmt3->fetch();
-
-                                                                $r_creator_name = ( $ftcstmt3['created_by'] == $userid ) ? "You" : $ftcstmt3['creator'];
-                                                                $r_date_created = $ftcstmt3['date_created'];
-                                                                $r_status       =  ($ftcstmt3['isAvailable'] == 1) ? "Session On Going <image src='../img/web/circle_green.png' width='10px'>" : "Session Done <image src='../img/web/circle_red.png' width='10px'>";
+                                                                $order_of_business_date = $ftcstmt3['row2'];
+                                                                $order_of_business_code = $ftcstmt3['row3'];
+                                                                $order_of_business_cby = $ftcstmt3['row4'];
+                                                                // $r_creator_name = ( $ftcstmt3['created_by'] == $userid ) ? "You" : $ftcstmt3['creator'];
+                                                                // $r_date_created = $ftcstmt3['date_created'];
+                                                                // $r_status       =  ($ftcstmt3['isAvailable'] == 1) ? "Session On Going <image src='../img/web/circle_green.png' width='10px'>" : "Session Done <image src='../img/web/circle_red.png' width='10px'>";
 
                                                             echo    "
-                                                                    <label class='text-primary font-weight-bold'>Details</label>
+                                                    
                                                                     <table class='table table-bordered'>
                                                                         <tbody>
                                                                             <tr>
-                                                                                <td>Creator</td>
-                                                                                <td>$r_creator_name</td>
+                                                                                <td>Barcode</td>
+                                                                                <td>$order_of_business_code</td>
                                                                             </tr>
                                                                             <tr>
-                                                                                <td>Created Date</td>
-                                                                                <td>$r_date_created</td>
+                                                                                <td>Order of Business Date</td>
+                                                                                <td>$order_of_business_date</td>
                                                                             </tr>
                                                                             <tr>
-                                                                                <td>Status</td>
-                                                                                <td>$r_status</td>
+                                                                                <td>Created By</td>
+                                                                                <td>$order_of_business_cby</td>
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>";
@@ -207,8 +210,8 @@
 
                                                     ?>
 
-                                                    <?php 
-                                                        $stmt4 = $conn->prepare("SELECT *,  func_Dateformat(uploadDateTime, 3) as uploaddate  FROM `tblupload` WHERE uploadFileName = :uploedFileName");
+                                            
+                                                        <!-- $stmt4 = $conn->prepare("SELECT *,  func_Dateformat(uploadDateTime, 3) as uploaddate  FROM `tblupload` WHERE uploadFileName = :uploedFileName");
                                                         $stmt4->execute(['uploedFileName'=>$session_barcode.".pdf"]);
                                                         $countstmt4 = $stmt4->rowCount();
 
@@ -243,47 +246,113 @@
                                                                     </table>";
                                                                 }
                                                        
-                                                        $pdo->close();
+                                                        $pdo->close(); -->
 
-                                                    ?>
+                                     
 
 
                                                 </div>
                                                 <div class="col-md-8">
-                                                    
-                                                <div id="group_discussion">
-                                                    <div id="group_chat_history" style="height:400px; border:1px solid #ccc; overflow-y: scroll; margin-bottom:24px; padding:16px;">
-                                                            <?php echo  viewForum($session_barcode, $conn, $userid) ?>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <!--<textarea name="group_chat_message" id="group_chat_message" class="form-control"></textarea>!-->
-                                                        <div class="chat_message_area">
-                                                            <input type="text" class="form-control" name="txt_1_1" id="txt_1_1" placeholder="Add your comments here...">
-                                                            <!-- <div id="group_chat_message" contenteditable class="form-control">
+                                                        
+
+
+                                                    <?php
+
+                                                        function showDescriptions($orderofbusinessname ,$orderofbusinesscode, $conn) {
+
+                                                            $output = "";
+                                                            $stmtshowDesc = $conn->prepare("SELECT description as orderofbusinessdesc
+                                                                                            FROM search_order_of_business
+                                                                                            WHERE order_of_business_id = :order_of_business_id
+                                                                                            AND order_of_business_code = :order_of_business_code");
+
+                                                            $stmtshowDesc->execute(['order_of_business_id'=>$orderofbusinessname, 'order_of_business_code'=>$orderofbusinesscode]);
+
+                                                            $countstmtshowDesc = $stmtshowDesc->rowCount();
                                                             
-                                                            </div> -->
-                                                            <!-- <textarea class="form-control" name="txt_1_1" id="txt_1_1" cols="30" rows="5" ></textarea> -->
-                                                          
+                                                            if($countstmtshowDesc == 0) {
+                                                                $output .= "No Details Found";
+                                                            }else{
+                                                                while ($row2 = $stmtshowDesc->fetchObject()) {
+                                                                    $output .= $row2->orderofbusinessdesc."<a href='#'> Click to View Files.</a><hr>";
+                                                                }   
+                                                            }
+
+                                                            return $output;
+                                                        }
+
+
+
+                                                        // $output = "";
+                                                        try {
+                                                       
+                                                            $stmtshowDesc = $conn->prepare("SELECT DISTINCT(order_of_business_id) as orderofbusinamename ,
+                                                                                            REPLACE(order_of_business_id,' ', '') as orderofbusi
+                                                                                            FROM `search_order_of_business` 
+                                                                                            WHERE order_of_business_code = :order_of_business_code");
+                                                            $stmtshowDesc->execute(['order_of_business_code'=>$session_barcode]);
+                                                            
+                                                            $countstmtshowDesc = $stmtshowDesc->rowCount();
+
+                                                            if($countstmtshowDesc == 0) {
+
+                                                                echo "No Details Found";
+
+
+                                                            }else {
+                                                                while ($row = $stmtshowDesc->fetchObject()) {
+                                                                    echo "
+                                                                        <div id='accordion31' role='tablist' aria-multiselectable='true'>
+                                                                            <div class='card accordion collapse-icon accordion-icon-rotate'>
+                                                                                <a id='heading31' class='card-header bg-primary success collapsed' data-toggle='collapse' href='#$row->orderofbusi' aria-expanded='false' aria-controls='$row->orderofbusi'>
+                                                                                    <div class='card-title lead white'>$row->orderofbusinamename</div>
+                                                                                </a>
+                                                                                <div id='$row->orderofbusi' role='tabpanel' data-parent='#accordion31' aria-labelledby='heading31' class='card-collapse collapse' aria-expanded='true' style=''>
+                                                                                    <div class='card-content'>
+                                                                                        <div class='card-body'>
+                                                                                            ".showDescriptions($row->orderofbusinamename,$session_barcode, $conn)."
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    ";
+                                                                }
+
+
+                                                            }
+                                                        }catch(PDOException $e) {
+                                                            echo $e->getMessage();
+                                                        }
+
+
+                                                        $pdo->close();
+
+                                                    ?>
+                                                
+                                                    
+                                                    <!-- <div id="group_discussion">
+                                                        <div id="group_chat_history" style="height:400px; border:1px solid #ccc; overflow-y: scroll; margin-bottom:24px; padding:16px;">
                                                         </div>
-                                                    </div>
-                                                    <div class="form-group" align="right">
-                                                    <div class="image_upload">
-                                                                <form id="uploadImage" method="post" action="upload.php" enctype="multipart/form-data">
-                                                                    
-                                                                    <input type="file" class="form-control inputfile" name="uploadFile" id="uploadFile" accept=".jpg, .png" />
-                                                                    <label for="uploadFile">Choose a file</label>
-                                                                    <button type="button" id="btn-submit-attachment" name="btn-submit-attachment" class="btn btn-danger btn-actions d-none" data-actions="submit-attachment">Submit</button>
-                                                                
-                                                                </form>
+                                                        <div class="form-group">
+                                                        <div class="chat_message_area">
+                                                                <input type="text" class="form-control" name="txt_1_1" id="txt_1_1" placeholder="Add your comments here...">
+                                                    
                                                             </div>
-                                                        <button type="button" name="send_group_chat" id="send_group_chat" class="btn btn-info btn-actions" data-actions="add-comment">Send</button>
-                                                    </div>
-                                                </div>
-
-
-
-
-
+                                                        </div>
+                                                        <div class="form-group" align="right">
+                                                        <div class="image_upload">
+                                                                    <form id="uploadImage" method="post" action="upload.php" enctype="multipart/form-data">
+                                                                        
+                                                                        <input type="file" class="form-control inputfile" name="uploadFile" id="uploadFile" accept=".jpg, .png" />
+                                                                        <label for="uploadFile">Choose a file</label>
+                                                                        <button type="button" id="btn-submit-attachment" name="btn-submit-attachment" class="btn btn-danger btn-actions d-none" data-actions="submit-attachment">Submit</button>
+                                                                    
+                                                                    </form>
+                                                                </div>
+                                                            <button type="button" name="send_group_chat" id="send_group_chat" class="btn btn-info btn-actions" data-actions="add-comment">Send</button>
+                                                        </div>
+                                                    </div> -->
                                                 </div>
                                             </div>
 

@@ -53,19 +53,8 @@
 
 
 
-        $stmt = $conn->prepare("SELECT 
-        b.barcode AS row1,
-        GROUP_CONCAT(title, ' ',ordinance_code, ' ',DESCRIPTION) AS row2,
-        func_fullname(b.created_by) AS row3,
-        `func_Dateformat`(created_date,3) AS row4,
-        b.isAvailable AS row5
-         
-     FROM `search_order_of_business` a
-     LEFT JOIN `tbl_activities` b ON b.barcode = a.barcode
-     LEFT JOIN `search_committees` c ON c.`barcode` = a.`barcode`
-
-     WHERE c.`userid` = :userid OR action_by = :action_by");
-        $stmt->execute(['userid'=>$userid, 'action_by'=>$userid]);
+        $stmt = $conn->prepare("SELECT * FROM vw_search_order_of_business");
+        $stmt->execute();
 
 
 
@@ -74,16 +63,24 @@
         foreach($records as $row){
             $row1           = $row['row1'];
             $row2           = $row['row2'];
-            $row3           = ($row['row3'] == NULL) ? " " : "Creator: ".$row['row3'];
+            $row3           = $row['row3'];
             $row4           = $row['row4'];
             $row5           = $row['row5'];
+            $row6           = $row['row6'];
+            $row7           = $row['row7'];
+            $row8           = $row['row8'];
+            $row9           = $row['row9'];
             // $row5           = ($row['row5'] == 1 ) ? "Session On Going <image src='../img/web/circle_green.png' width='10px'> " :  "Session Down <image src='../img/web/circle_red.png' width='10px'>";
             $data[] = array(
                 "row1"=>$row1,
                 "row2"=>$row2,
                 "row3"=>$row3,
                 "row4"=>$row4,
-                "row5"=>$row5
+                "row5"=>$row5,
+                "row6"=>$row6,
+                "row7"=>$row7,
+                "row8"=>$row8,
+                "row9"=>$row9,
 
             );
         }

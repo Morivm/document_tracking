@@ -536,25 +536,54 @@
                     }
                 }
 
-
-
-
+        
                 $stmt = $conn->prepare("CALL sp_generate_cover_photo(:in_action, :in_barcode, :in_order_business_date, :in_action_by)");
 
                 $stmt->execute(['in_action'=>'generate', 'in_barcode'=>$order_of_business_code, 'in_order_business_date'=>$order_of_business_date, 'in_action_by'=>$userid]);
 
                 $result = $stmt->fetch();
-
+                
                 $string = $result['barcodeloop'];
 
                 if($stmt) {
-
+                    $stmt->closeCursor();
                     $string = preg_replace('/\.$/', '', $string); //Remove dot at end if exists
-                    $array = explode(',', $string); //split string into array seperated by ', '
-                    foreach($array as $value) //loop over values
+                    $array = explode(',', $string); 
+                    foreach($array as $value) 
                     {
                         if (!file_exists("../modules/forum/".$order_of_business_code."/".$value)) {
                             mkdir("../modules/forum/". $order_of_business_code."/".$value, 0777);
+
+                            $selectallbusiness = $conn ->prepare("SELECT GROUP_CONCAT(barcode) as allbusiness FROM search_order_of_business 
+                            WHERE order_of_business_code = :order_of_business_code"); 
+                
+                            $selectallbusiness->execute(['order_of_business_code'=>$or_code]);
+                            $resultallbusiness = $selectallbusiness->fetch();
+                        
+                
+                            $stringbusiness = $resultallbusiness['allbusiness'];
+                            $stringbusiness = preg_replace('/\.$/', '', $stringbusiness);
+                            $arraybusiness = explode(',', $stringbusiness); 
+                            foreach($arraybusiness as $valuebusiness) //loop over values
+                            {
+                               
+                                $filesbusiness = $valuebusiness;
+                                $pathbusiness = "../img/barcodes/$valuebusiness";
+                                $put = file_put_contents("../modules/imgsbarcode/$valuebusiness.jpg", $generator->getBarcode($valuebusiness, $generator::TYPE_CODE_128));
+                                    $tmpFilePath =  $valuebusiness;
+                                    if ($tmpFilePath != ""){
+                                        $newFilePath = $path."/". str_replace(' ', '_', $valuebusiness);
+                                        $getattachmentname =  str_replace(' ', '_',  $valuebusiness);
+                                        if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+                                            $str .= $getattachmentname . $delimiter;
+                                        }
+                                    }
+                    
+                                if (!file_exists("../modules/forum/".$order_of_business_code."/".$value)) {
+                                    mkdir("../modules/forum/". $order_of_business_code."/".$value, 0777);
+                                }
+                            }
+
                         }
                     }
 

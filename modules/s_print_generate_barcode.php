@@ -107,7 +107,18 @@ function showbusinessDescription($conn, $business_id_name, $barcodes) {
     
 }
 
-
+function convtoLetter($str) {
+$alpha = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+$newName = '';
+do {
+    $str--;
+    $limit = floor($str / 26);
+    $reminder = $str % 26;
+    $newName = $alpha[$reminder].$newName;
+    $str=$limit;
+} while ($str >0);
+    return $newName;
+}
 function showbusinessDetails($conn, $barcode) {
 
     try {
@@ -198,7 +209,100 @@ $pdf->setFont('dejavusans', '', 10);
 $pdf->writeHTML($output_res2, false, false, false, false, '');
 
 
+$pdf->AddPage();
 
+
+try {
+    $stmt_p2 = $conn->prepare("SELECT GROUP_CONCAT(barcode) as  bardcoded,
+                            GROUP_CONCAT(order_of_business_id) as businessAll,
+                            GROUP_CONCAT(description,'++++') as businessDesc,
+                            GROUP_CONCAT((SELECT c.id FROM `tbl_setup_order_of_business` c WHERE c.order_of_business = order_of_business_id )) as businessId,
+                            GROUP_CONCAT( SUBSTRING_INDEX(  SUBSTRING_INDEX(  barcode ,'-',-2)    ,'-',-1) ) as  businessdescid
+                                
+                                FROM search_order_of_business 
+                                WHERE order_of_business_code = :order_of_business_code");
+    $stmt_p2->execute(['order_of_business_code'=>$barcode]);
+    $count_p2 = $stmt_p2->rowCount();
+
+    if($count_p2 == 0) {
+        $output_p2 = "No Data Found";
+    }else{
+        $resultp2 = $stmt_p2->fetch();
+
+        $string = $resultp2['bardcoded'];
+        $string = preg_replace('/\.$/', '', $string);
+        $array = explode(',', $string); 
+
+        $string2 = $resultp2['businessAll'];
+        $string2 = preg_replace('/\.$/', '', $string2);
+        $array2 = explode(',', $string2); 
+  
+        $string3 = $resultp2['businessDesc'];
+        $string3 = preg_replace('/\.$/', '', $string3);
+        $array3 = explode('++++', $string3); 
+
+        $string4 = $resultp2['businessId'];
+        $string4 = preg_replace('/\.$/', '', $string4);
+        $array4 = explode(',', $string4); 
+        
+        $string5 = $resultp2['businessdescid'];
+        $string5 = preg_replace('/\.$/', '', $string5);
+        $array5 = explode(',', $string5); 
+
+
+        $x = 0;
+        // $n = "Z";
+
+        $output_p2 = "";
+        $output_p23 = "";
+        for($i=0; $i<count($array); $i++)
+        {
+
+
+            $x++;
+            // $n++;
+            $output_p2.$x = "<br>";
+            // $output_p2.$x .="$value test<br>";
+            $pdf->setFont('dejavusans', '', 10);
+            $pdf->Image('../img/web/162918045116287627001627875343ss.JPG', 10, 5, 30, 20, 'JPG', '', '', true, 150, '', false, false, false, false, false, false);
+            $pdf->Image( "imgsbarcode/".$array[$i].".jpg" , 120, 5, 70, 10, 'jpg', '', '', true, 150, 'right', false, false, false, false, false, false);
+            $pdf->Cell(155, 20, $array[$i] , 0, false, 'R', 0, '', 0, false, 'T', 'M');
+         
+            $pdf->Multicell(0,70,""); 
+
+            $font_size = $pdf->pixelsToUnits('150');
+
+            $pdf->SetFont ('helvetica', '', $font_size , '', 'default', true );
+            $pdf->Cell(0, 0,  $array2[$i] , 0, 1, 'C', 0, '', 0);
+
+            $font_size2 = $pdf->pixelsToUnits('150');
+            $pdf->SetFont ('helvetica', '', $font_size2 , '', 'default', true );
+            $pdf->Cell(0, 0, "(".convtoLetter($array4[$i])."-".$array5[$i] .")", 0, 1, 'C', 0, '', 0);
+
+
+            // $pdf->MultiCell(55, 5, ltrim($array3[$i],','), 0, 'J', 0, 2, '' ,'', true);
+     
+        //    $pdf->MultiCell(200, 55, ltrim($array3[$i]), 0, 'J', false, 1, 0, true, 0, false, true, 100,  'M', true);
+
+
+
+            $pdf->AddPage();
+            $pdf->writeHTML($output_p2.$x, false, false, false, false, '');
+
+
+
+            // if (!file_exists("../modules/forum/".$order_of_business_code."/".$value)) {
+            //     mkdir("../modules/forum/". $order_of_business_code."/".$value, 0777);
+            // }
+        }
+
+    }
+    }catch (PDOException $e) {
+        $output_p2.$x = die($e->getMessage());
+    }
+
+
+// $pdf->setFont('dejavusans', '', 10);
 
 
 // try {
@@ -276,8 +380,8 @@ $pdf->writeHTML($output_res2, false, false, false, false, '');
 // $pdf->writeHTML($tbl3, true, false, false, false, '');
 
 
+    // $pdf->Output(__DIR__ . "\\pr\\$barcode.pdf", 'I');
     $pdf->Output(__DIR__ . "\\pr\\$barcode.pdf", 'F');
-
 
 
     $source = "../modules/pr/$barcode.pdf"; 

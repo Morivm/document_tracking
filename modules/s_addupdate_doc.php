@@ -95,11 +95,15 @@
                                                 <thead class="cdtheadcolor">
                                                     <tr>
                                                         <th>ID</th>
-                                                        <th>Details</th>
-                                                        <th>Creator</th>
-                                                        <th>Created Date</th>
-                                                        <th>Availability</th>
-                                                        <th>Actions</th>
+                                                        <th>Order of Business Date</th>
+                                                        <th>Order of Business Code</th>
+                                                        <th>Created By</th>
+                                                        <th>Order of Business Name</th>
+                                                        <th>Order of Business Description</th>
+                                                        <th>Order of Business Barcode</th>
+                                                        <th>Order of Business Added By</th>
+                                                        <th>Order of Business Added Date</th>
+                                                        <th>Action</th>
                                                     </tr>
                                                 </thead>
                                             </table>
@@ -277,43 +281,48 @@
                                         s_table_main
                         },
                     },
-                    // 'columnDefs': [
-                    //     { "targets": 5,  "data": null, "defaultContent": "<button class='btn btn-primary btn-dl-files'>Download Files</button>" },
-                    // ],
+                    'columnDefs': [
+                        { "targets": 9,  "data": null, "defaultContent": "<button class='btn btn-primary btn-view'>View</button>" },
+                    ],
 
                     'columns': [
               
-                        { data: 'row1' },
-                        { data: 'row2', visible : false },
+                        { data: 'row1', visible: false },
+                        { data: 'row2' },
                         { data: 'row3' },
                         { data: 'row4' },
-                        {
-                            "className":      'options',
-                            "render": function(data, type, full, meta){
-                                if(full.row5 == 1) {
-                                    return "Session On Going <image src='../img/web/circle_green.png' width='10px'>";
-                                }else if(full.row5 == 0) {
-                                    return "Session Done <image src='../img/web/circle_red.png' width='10px'>";
-                                }else{
-                                    return "";
-                                }
-                            }
-                        }, 
-                        {
-                            "className":      'options',
-                            "render": function(data, type, full, meta){
-                                var barc = full.row1;
-                                var baraction = `activity.php?activity=${barc}`;
+                        { data: 'row5', visible: false },
+                        { data: 'row6', visible: false },
+                        { data: 'row7', visible: false },
+                        { data: 'row8', visible: false },
+                        { data: 'row9', visible: false },
+                        // {
+                        //     "className":      'options',
+                        //     "render": function(data, type, full, meta){
+                        //         if(full.row5 == 1) {
+                        //             return "Session On Going <image src='../img/web/circle_green.png' width='10px'>";
+                        //         }else if(full.row5 == 0) {
+                        //             return "Session Done <image src='../img/web/circle_red.png' width='10px'>";
+                        //         }else{
+                        //             return "";
+                        //         }
+                        //     }
+                        // }, 
+                        // {
+                        //     "className":      'options',
+                        //     "render": function(data, type, full, meta){
+                        //         var barc = full.row1;
+                        //         var baraction = `activity.php?activity=${barc}`;
 
-                                if(full.row5 == 1) {
-                                    return "<button class='btn btn-primary btn-dl-files'>View File</button> <button class='btn btn-success btn-gotosession'>Go to Session</button> ";
-                                }else if(full.row5 == 0) {
-                                    return "<button class='btn btn-primary btn-dl-files'>View File</button>";
-                                }else{
-                                    return "";
-                                }
-                            }
-                        },
+                        //         if(full.row5 == 1) {
+                        //             return "<button class='btn btn-primary btn-dl-files'>View File</button> <button class='btn btn-success btn-gotosession'>Go to Session</button> ";
+                        //         }else if(full.row5 == 0) {
+                        //             return "<button class='btn btn-primary btn-dl-files'>View File</button>";
+                        //         }else{
+                        //             return "";
+                        //         }
+                        //     }
+                        // },
                         
                     ],
 
@@ -323,17 +332,19 @@
                         closePageLoader();
                     },
                 });
-                $('#tbl_main tbody').on( 'click', '.btn-dl-files', function () {
-                    var data = table.row( $(this).parents('tr') ).data();
-                    var getFileondb = "";
-                    var barcode = data['row1'];
+                // $('#tbl_main tbody').on( 'click', '.btn-dl-files', function () {
+                //     var data = table.row( $(this).parents('tr') ).data();
+                //     var getFileondb = "";
+                //     var barcode = data['row1'];
               
-                    window.open(`s_print_blob_db.php?barcode=${barcode}`);
-                } );
-                $('#tbl_main tbody').on( 'click', '.btn-gotosession', function () {
+                //     window.open(`s_print_blob_db.php?barcode=${barcode}`);
+                // } );
+                $('#tbl_main tbody').on( 'click', '.btn-view', function () {
                     var data = table.row( $(this).parents('tr') ).data();
-                    var barcode = data['row1'];
+                    var barcode = data['row3'];
+
                     window.location.replace(`activity.php?red=${makerandom(400)}&&activity=${barcode}&&det=${makerandom(400)}`);
+              
                 } );
             });
 
