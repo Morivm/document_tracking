@@ -53,7 +53,7 @@
 
 ?>
 
-<style>
+<!-- <style>
 .inputfile {
 	width: 0.1px;
 	height: 0.1px;
@@ -81,7 +81,7 @@
 	outline: 1px dotted #BF360C;
 	outline: -webkit-focus-ring-color auto 5px;
 }
-</style>
+</style> -->
 <body class="vertical-layout vertical-menu 2-columns  fixed-navbar" data-open="click" data-menu="vertical-menu" data-col="2-columns">
 
 
@@ -90,34 +90,36 @@
     include '../includes/sidebar.php'
 ?>
 
-<!-- <div class="modal fade text-left mdl_main" id="mdl_main" tabindex="-1">
+<div class="modal fade text-left mdl_main" id="mdl_main" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">View Documents</h4>
+                <h4 class="modal-title">View Files</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table id="tbl_main2" class="table table-hover table-bordered table-striped tbl_main2" style="width:100%">
+                        <div id="div_original_file"></div>
+                        <!-- <table id="tbl_main2" class="table table-hover table-bordered table-striped tbl_main2" style="width:100%">
                             <thead class="cdtheadcolor">
                                 <tr>
                                     <th>Document Type</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                        </table>
+                        </table> -->
                     </div>
                 </div>
             <div class="modal-footer">
+                <button type="button" class="btn grey btn-outline-secondary btn-actions" data-actions='uploadfILE'>Upload</button>
                 <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Close</button>
             </div>
 
         </div>
     </div>
-</div> -->
+</div>
     <div class="app-content content">
         <div class="content-overlay"></div>
         <div class="content-wrapper">
@@ -261,7 +263,7 @@
                                                         function showDescriptions($orderofbusinessname ,$orderofbusinesscode, $conn) {
 
                                                             $output = "";
-                                                            $stmtshowDesc = $conn->prepare("SELECT description as orderofbusinessdesc
+                                                            $stmtshowDesc = $conn->prepare("SELECT description as orderofbusinessdesc, barcode , order_of_business_code
                                                                                             FROM search_order_of_business
                                                                                             WHERE order_of_business_id = :order_of_business_id
                                                                                             AND order_of_business_code = :order_of_business_code");
@@ -274,7 +276,7 @@
                                                                 $output .= "No Details Found";
                                                             }else{
                                                                 while ($row2 = $stmtshowDesc->fetchObject()) {
-                                                                    $output .= $row2->orderofbusinessdesc."<a href='#'> Click to View Files.</a><hr>";
+                                                                    $output .= $row2->orderofbusinessdesc."<a href='#' class='cls-vw-files' data-barcode='$row2->barcode' data-businesscode='$row2->order_of_business_code'> Click to View Files.</a><hr>";
                                                                 }   
                                                             }
 
@@ -304,7 +306,7 @@
                                                                     echo "
                                                                         <div id='accordion31' role='tablist' aria-multiselectable='true'>
                                                                             <div class='card accordion collapse-icon accordion-icon-rotate'>
-                                                                                <a id='heading31' class='card-header bg-primary success collapsed' data-toggle='collapse' href='#$row->orderofbusi' aria-expanded='false' aria-controls='$row->orderofbusi'>
+                                                                                <a id='heading31' class='card-header bg-info success collapsed' data-toggle='collapse' href='#$row->orderofbusi' aria-expanded='false' aria-controls='$row->orderofbusi'>
                                                                                     <div class='card-title lead white'>$row->orderofbusinamename</div>
                                                                                 </a>
                                                                                 <div id='$row->orderofbusi' role='tabpanel' data-parent='#accordion31' aria-labelledby='heading31' class='card-collapse collapse' aria-expanded='true' style=''>
@@ -387,7 +389,8 @@
                 pageLocation("", "li_add_document", "Activity");
                 closePageLoader();
 
-
+                var g_order_ofbusinesscode="";
+                var g_barcode="";
 
                 $("#txt_1_1").keyup(function(event) {
                     if (event.keyCode === 13) {
@@ -434,7 +437,6 @@
                         })
                     }else if(action == "submit-attachment") {
 
-
                         var formData    = new FormData();
                         formData.append('upload_att', "");
                         formData.append('file', $('#uploadFile')[0].files[0]);
@@ -464,8 +466,37 @@
                         
                             }
                         });
+
+                    }else if(action =="uploadfILE"){
+
+                        var gen_page_cover = "";
+                        var order_of_business_code = g_order_ofbusinesscode;
+                        var barcode = g_barcode;
+
+                        $.ajax({
+                            url : "../actions/s_activity_act.php",
+                            method : "post",
+                            // dataType : "json",
+                            data : {
+                                gen_page_cover, order_of_business_code, barcode
+                            },
+                            // beforeSend : function() {
+                            //     openPageLoader();
+                            //     $("#div_original_file").html("");
+                            // },
+                            success : function(response) {
+                                alert(response)
+                                // closePageLoader()
+                                // $("#div_original_file").html(response[2]);
+
+
+                                // $("#mdl_main").modal("show");
+                            }
+                        });  
+
                     }else{
 
+                    
                         responseTosubmit2("error", "Error Found", "Please Reload page");
                     }
                     
@@ -475,6 +506,35 @@
                 });
 
 
+                $(document).on('click', '.cls-vw-files', function(e){
+            
+                    var vw_files = "";
+                    var barcode = $(this).data('barcode');
+                    var businesscode = $(this).data('businesscode');
+                    g_order_ofbusinesscode =  businesscode;
+                    g_barcode = barcode;
+
+                    $.ajax({
+                        url : "../actions/s_activity_act.php",
+                        method : "post",
+                        dataType : "json",
+                        data : {
+                            vw_files, barcode, businesscode
+                        },
+                        beforeSend : function() {
+                            openPageLoader();
+                            $("#div_original_file").html("");
+                        },
+                        success : function(response) {
+   
+                            closePageLoader()
+                            $("#div_original_file").html(response[2]);
+
+
+                            $("#mdl_main").modal("show");
+                        }
+                    });  
+                });
             });
 
             //     pageLocation("", "li_add_document", "Add/Update Documents");
