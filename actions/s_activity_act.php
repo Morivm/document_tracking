@@ -1,8 +1,10 @@
 <?php
     include "../modules/session.php";
+    require '../vendor/autoload.php';
 
     $conn = $pdo->open();
 
+    $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
     
     $draw        = intval(0);
     $data        = array();
@@ -211,7 +213,7 @@
                             <td>$newbarcode</td>
                             <td>$row2->date_uploaded <label class='text-success'><i>(Latest)</i></label></td>
                             <td>$row2->uploaded_by</td>
-                            <td><a href='#'>View</a></td>
+                            <td><a href='../scanned_docs/$newbarcode.pdf' target='_blank'>View</a></td>
                         </tr>";
     
 
@@ -231,7 +233,7 @@
                             <td>$newbarcode3</td>
                             <td>$row3->date_uploaded</td>
                             <td>$row3->uploaded_by</td>
-                            <td><a href='#'>View</a></td>
+                            <td><a href='../scanned_docs/$newbarcode3.pdf' target='_blank'>View</a></td>
                         </tr>";
                     }
                 }
@@ -318,7 +320,7 @@
                                 <td>$row->barcode</td>
                                 <td>$row->added_date</td>
                                 <td>$row->added_by</td>
-                                <td><a href='#'>View</a></td>
+                                <td><a href='../scanned_docs/$row->barcode.pdf' target='_blank'>View</a></td>
                             </tr>
                         </table><br/>
                         
@@ -361,29 +363,68 @@
     
         $order_of_business_code                 =$_POST['order_of_business_code'];
         $barcode                                =$_POST['barcode'];
-        // $or_code                               =$order_of_business_code  ;
 
         try {
 
 
-            $stmt = $conn->prepare("SELECT ");
+            $stmt = $conn->prepare("SELECT MAX(version_no) as maxversion
+                                    FROM 
+                                        search_order_of_busines_files
+                                    WHERE 
+                                        order_of_business_code = :order_of_business_code
+                                    AND 
+                                        barcode = :barcode
+                                    ");
+            $stmt->execute(['order_of_business_code'=>$order_of_business_code, 'barcode'=>$barcode]);
+            $ftcstmt = $stmt->fetch();
+            $maxvers = $ftcstmt['maxversion'] + 1;
 
+            if($stmt) {
 
+                // $files = $barcode."-".$maxvers;
+                // $path = "../img/barcodes/$barcode"."-".$maxvers;
+                $newGeneratedBarcode = $barcode."-".$maxvers;
+
+                // $path = "../img/barcodes/$order_of_business_code";
+                $put = file_put_contents("../modules/imgsbarcode/$newGeneratedBarcode.jpg", $generator->getBarcode($newGeneratedBarcode, $generator::TYPE_CODE_128));
+                    // $tmpFilePath =  $order_of_business_code;
+                    // if ($tmpFilePath != ""){
+                    //     $newFilePath = $path."/". str_replace(' ', '_', $order_of_business_code);
+                    //     $getattachmentname =  str_replace(' ', '_',  $order_of_business_code);
+                    //     if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+                    //         $str .= $getattachmentname . $delimiter;
+                    //     }
+                    // }
+
+                if($put) {
+
+                    $output = array("success", "Success", $maxvers, $newGeneratedBarcode, $barcode, $maxvers);
+                }else {
+                    $output = array("error", "Error Found", $put);
+                }
+
+            }else {
+                $output = array("error", "Error Found", $stmt);
+            }
             
-            if (!file_exists("../modules/forum/".$order_of_business_code)) {
-                mkdir("../modules/forum/" . $order_of_business_code, 0777);
+            
+            // if (!file_exists("../modules/forum/".$order_of_business_code)) {
+                // mkdir("../modules/forum/" . $order_of_business_code, 0777);
 
-                $files = $order_of_business_code;
-                $path = "../img/barcodes/$order_of_business_code";
-                $put = file_put_contents("../modules/imgsbarcode/$order_of_business_code.jpg", $generator->getBarcode($order_of_business_code, $generator::TYPE_CODE_128));
-                    $tmpFilePath =  $order_of_business_code;
-                    if ($tmpFilePath != ""){
-                        $newFilePath = $path."/". str_replace(' ', '_', $order_of_business_code);
-                        $getattachmentname =  str_replace(' ', '_',  $order_of_business_code);
-                        if(move_uploaded_file($tmpFilePath, $newFilePath)) {
-                            $str .= $getattachmentname . $delimiter;
-                        }
-                    }
+                // $files = $order_of_business_code;
+                // $path = "../img/barcodes/$order_of_business_code";
+                // $put = file_put_contents("../modules/imgsbarcode/$order_of_business_code.jpg", $generator->getBarcode($order_of_business_code, $generator::TYPE_CODE_128));
+                //     $tmpFilePath =  $order_of_business_code;
+                //     if ($tmpFilePath != ""){
+                //         $newFilePath = $path."/". str_replace(' ', '_', $order_of_business_code);
+                //         $getattachmentname =  str_replace(' ', '_',  $order_of_business_code);
+                //         if(move_uploaded_file($tmpFilePath, $newFilePath)) {
+                //             $str .= $getattachmentname . $delimiter;
+                //         }
+                //     }
+
+
+                
 
         
                 // $stmt = $conn->prepare("CALL sp_generate_cover_photo(:in_action, :in_barcode, :in_order_business_date, :in_action_by)");
@@ -441,9 +482,10 @@
                 //     $output = array("error", "Error Found", $stmt);
                 // }
                 
-            } else {
-                $output = array("error", "Error Found", "Unable to create path.");
-            }
+            // } else {
+               
+            // }
+            // $output = array("error", "Error Found", "Unable to create path.");
 
 
         }catch (PDOException $e) {
@@ -457,35 +499,39 @@
 
 
 
-    // if(isset($_POST['view_documents'])){
+    if(isset($_POST['add_version'])){
 
-    //     try {
+        $barcodeorig = $_POST['barcodeorig'];
+        $maxversion = $_POST['maxversion'];
+        $barcode = $_POST['barcodecc'];
 
-    //         $filename = glob("../scanned_docs/*");
+        try {
 
-    //         if ( $filename) {
-    //             foreach($filename as $value) {
-    //                 $stmt = $conn->prepare("INSERT INTO tbl_documents (document_name, users_id, document_type) VALUES(:document_name, (SELECT SUBSTRING_INDEX(REPLACE(SUBSTRING(:document_name, LOCATE('../scanned_docs/', :document_name )),'../scanned_docs/',''), '_', 1)),     (SELECT  REPLACE( SUBSTRING_INDEX(REPLACE(SUBSTRING(:document_name, LOCATE('../scanned_docs/', :document_name  )),'../scanned_docs/',''), '_', -1) ,'.pdf', ''  ) )           ) ON DUPLICATE KEY UPDATE    
-    //                 users_id=  (SELECT SUBSTRING_INDEX(REPLACE(SUBSTRING(:document_name, LOCATE('../scanned_docs/', :document_name )),'../scanned_docs/',''), '_', 1)) , document_type = (SELECT  REPLACE( SUBSTRING_INDEX(REPLACE(SUBSTRING(:document_name, LOCATE('../scanned_docs/', :document_name  )),'../scanned_docs/',''), '_', -1) ,'.pdf', ''  ) )          ");
-    //                 $stmt->execute(['document_name'=>$value]);
+            $stmt = $conn->prepare("INSERT INTO search_order_of_busines_files(order_of_business_code, barcode,
+                version_no, uploaded_by)
+                VALUES( (SELECT order_of_business_code FROM search_order_of_business WHERE barcode = :order_of_business_code  ),
+                :barcode, :version_no,  func_fullname(:uploaded_by)   )
+            ");
 
-    //                 $output = array("success", "Success", "Syncing Success...");
-    //             }
+            $stmt->execute(['order_of_business_code'=>$barcodeorig, 'barcode'=>$barcodeorig, 'version_no'=>$maxversion, 'uploaded_by'=>$userid ]);
 
-    //         } else {
-    //             $output = array("error", "Error Found", $filename );
-    //         }
-      
+            if($stmt) {
+                $output = array("success","Success","Generated Succesfully");
+            }else {
+                $output = array("error","Error Found",$stmt);
+            }
 
-    //     }catch (PDOException $e) {
 
-    //         $output = array("error","Error Found", $e->getMessage());
 
-    //     }
-    //     echo json_encode($output);
-    //     $pdo->close();
-    //     exit();
-    // }
+        }catch (PDOException $e) {
+
+            $output = array("error","Error Found", $e->getMessage());
+
+        }
+        echo json_encode($output);
+        $pdo->close();
+        exit();
+    }
 
     // if(isset($_POST['s_table_main'])) {
 

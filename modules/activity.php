@@ -167,6 +167,59 @@
                                 </div>
                                 <div class="card-content ">
                                     <div class="card-body card-dashboard">
+
+                                        <div class="row">
+
+                                         
+                                            <div class="col-md-12">
+                                     
+      
+      
+                                            <?php 
+
+                                                function getLastVersio($conn, $barcode) {
+
+                                                    $lastpdfs = $conn->prepare("SELECT  barcode , MAX(version_no) as mxvers FROM search_order_of_busines_files
+                                                     WHERE 
+                                                    barcode =:barcode");
+                                                    $lastpdfs->execute(['barcode'=>$barcode]);
+                                                    $ftclastpdfs = $lastpdfs->fetch();
+
+                                                    if($ftclastpdfs['barcode'] == ""){
+                                                        return $barcode ;
+                                                    }else{
+                                                        // return  $ftclastpdfs['barcode']."-". $ftclastpdfs['mxvers'].".pdf";
+
+                                                        return "<iframe
+                                                        src='https://drive.google.com/viewerng/viewer?embedded=true&url=http://infolab.stanford.edu/pub/papers/google.pdf#toolbar=0&scrollbar=0'
+                                                        frameBorder='0'
+                                                        scrolling='auto'
+                                                        height='100%'
+                                                        width='100%'
+                                                    ></iframe>";
+
+                                                    }
+
+                                                }
+
+
+
+                                                $stmtpdfs = $conn->prepare("SELECT barcode FROM search_order_of_business WHERE order_of_business_code = :order_of_business_code order by added_date DESC");
+                                                $stmtpdfs->execute(['order_of_business_code'=>$session_barcode]);
+                                                
+
+                                                while($rowpdfs = $stmtpdfs->fetchObject()) {
+
+                                                    echo getLastVersio($conn,  $rowpdfs->barcode) ."<br>";
+                                                }
+                                            
+                                            ?>
+                                                </div>
+                                           
+
+                                        </div>
+
+
                  
                                             <div class="row">
                                                 <div class="col-md-4">
@@ -260,6 +313,18 @@
 
                                                     <?php
 
+                                            function convtoLetter($str) {
+                                                $alpha = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
+                                                $newName = '';
+                                                do {
+                                                    $str--;
+                                                    $limit = floor($str / 26);
+                                                    $reminder = $str % 26;
+                                                    $newName = $alpha[$reminder].$newName;
+                                                    $str=$limit;
+                                                } while ($str >0);
+                                                    return $newName;
+                                                }
                                                         function showDescriptions($orderofbusinessname ,$orderofbusinesscode, $conn) {
 
                                                             $output = "";
@@ -302,12 +367,14 @@
 
 
                                                             }else {
+                                                                $x = 'Z';
                                                                 while ($row = $stmtshowDesc->fetchObject()) {
+                                                                    $x++;
                                                                     echo "
                                                                         <div id='accordion31' role='tablist' aria-multiselectable='true'>
                                                                             <div class='card accordion collapse-icon accordion-icon-rotate'>
                                                                                 <a id='heading31' class='card-header bg-info success collapsed' data-toggle='collapse' href='#$row->orderofbusi' aria-expanded='false' aria-controls='$row->orderofbusi'>
-                                                                                    <div class='card-title lead white'>$row->orderofbusinamename</div>
+                                                                                    <div class='card-title lead white'>".substr($x, 1).". $row->orderofbusinamename</div>
                                                                                 </a>
                                                                                 <div id='$row->orderofbusi' role='tabpanel' data-parent='#accordion31' aria-labelledby='heading31' class='card-collapse collapse' aria-expanded='true' style=''>
                                                                                     <div class='card-content'>
@@ -331,31 +398,13 @@
                                                         $pdo->close();
 
                                                     ?>
+                                
+                                                <div class="pull-right">
+                                                    <input type="button" class="btn btn-danger" onclick="location.href='s_addupdate_doc'" value="Back" />
+                                                    <button class="btn btn-success btn-actions" data-actions="downloadaszip"><i class="las la-download"></i> Download</button>
                                                 
-                                                    
-                                                    <!-- <div id="group_discussion">
-                                                        <div id="group_chat_history" style="height:400px; border:1px solid #ccc; overflow-y: scroll; margin-bottom:24px; padding:16px;">
-                                                        </div>
-                                                        <div class="form-group">
-                                                        <div class="chat_message_area">
-                                                                <input type="text" class="form-control" name="txt_1_1" id="txt_1_1" placeholder="Add your comments here...">
-                                                    
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group" align="right">
-                                                        <div class="image_upload">
-                                                                    <form id="uploadImage" method="post" action="upload.php" enctype="multipart/form-data">
-                                                                        
-                                                                        <input type="file" class="form-control inputfile" name="uploadFile" id="uploadFile" accept=".jpg, .png" />
-                                                                        <label for="uploadFile">Choose a file</label>
-                                                                        <button type="button" id="btn-submit-attachment" name="btn-submit-attachment" class="btn btn-danger btn-actions d-none" data-actions="submit-attachment">Submit</button>
-                                                                    
-                                                                    </form>
-                                                                </div>
-                                                            <button type="button" name="send_group_chat" id="send_group_chat" class="btn btn-info btn-actions" data-actions="add-comment">Send</button>
-                                                        </div>
-                                                    </div> -->
                                                 </div>
+                                               </div>
                                             </div>
 
 
@@ -476,23 +525,60 @@
                         $.ajax({
                             url : "../actions/s_activity_act.php",
                             method : "post",
-                            // dataType : "json",
+                            dataType : "json",
                             data : {
                                 gen_page_cover, order_of_business_code, barcode
                             },
-                            // beforeSend : function() {
-                            //     openPageLoader();
-                            //     $("#div_original_file").html("");
-                            // },
+                            beforeSend : function() {
+                                openPageLoader();
+                            },
                             success : function(response) {
-                                alert(response)
-                                // closePageLoader()
-                                // $("#div_original_file").html(response[2]);
+                                closePageLoader();
+                                if(response[0] == "error") {
+                                    responseTosubmit2(response[0], response[1] , response[2]);
+                                }else{
+
+                                    var add_version= "";
+                                    var barcodeorig = response[4];  
+                                    var barcodecc = g_barcode; 
+                                    var maxversion = response[5];
+                                    
+
+                                    $.ajax({
+                                        url : "../actions/s_activity_act.php",
+                                        method : "post",
+                                        dataType: "json",
+                                        data : {
+                                            add_version, barcodeorig, barcodecc, maxversion
+                                        },
+                                        success : function (response) {
+                                            responseTosubmit2(response[0], response[1] , response[2]);
+                                        }
+
+                                    });
 
 
-                                // $("#mdl_main").modal("show");
+                                    var win = window.open(`s_print_generate_upload_file.php?barcode=${response[3]}&&barcodeorig=${response[4]}&&vers=${response[5]}`, "thePopUp", "width=500,height=500");
+                                        win.document.title = 'Generating ... Please Dont Close';
+                                        
+                                        var pollTimer = window.setInterval(function() {
+                                            if (win.closed !== false) {
+                                                window.clearInterval(pollTimer);
+                                                
+                                                setTimeout(function() {        showPrintedCopy(response[3]); }, 1000);
+                                                setTimeout(function() {        location.reload() }, 3000);
+                                        
+                                            }
+                                     }, 200);
+
+                                }
                             }
                         });  
+
+                    }else if(action="downloadaszip") {
+                    
+                        window.location.href=`s_download_as_zip.php?orderofbusinesscode=${ "<?php echo $session_barcode ?>" }`;
+
 
                     }else{
 
@@ -514,6 +600,7 @@
                     g_order_ofbusinesscode =  businesscode;
                     g_barcode = barcode;
 
+
                     $.ajax({
                         url : "../actions/s_activity_act.php",
                         method : "post",
@@ -526,11 +613,8 @@
                             $("#div_original_file").html("");
                         },
                         success : function(response) {
-   
                             closePageLoader()
                             $("#div_original_file").html(response[2]);
-
-
                             $("#mdl_main").modal("show");
                         }
                     });  
@@ -781,6 +865,12 @@
                 
             // }
 
+
+            let showPrintedCopy = (barcode) => {
+                window.open(`pr/${barcode}.pdf`,"popupWindow", "width=900,height=900,scrollbars=yes");
+                $("#mdl_print").modal("hide");
+
+            }
         </script>
 </body>
 </html>
