@@ -24,9 +24,10 @@
             <div class="content-body">
         <section id="ordering">
             <!-- PENDING -->
-            <!-- <div class="row">
+            <div class="row">
                 <div class="col-12">
                     <div class="card">
+                        
                         <div class="card-header">
                             <h4 class="card-title text-danger">Pending Documents</h4>
                         </div>
@@ -57,10 +58,10 @@
                         </div>
                     </div>
                 </div>
-            </div> -->
+            </div>
 
             <!-- APPROVED -->
-            <!-- <div class="row">
+            <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
@@ -87,7 +88,7 @@
                         </div>
                     </div>
                 </div>
-            </div> -->
+            </div>
         </section>
             </div>
         </div>

@@ -167,60 +167,6 @@
                                 </div>
                                 <div class="card-content ">
                                     <div class="card-body card-dashboard">
-
-                                        <div class="row">
-
-                                         
-                                            <div class="col-md-12">
-                                     
-      
-      
-                                            <?php 
-
-                                                function getLastVersio($conn, $barcode) {
-
-                                                    $lastpdfs = $conn->prepare("SELECT  barcode , MAX(version_no) as mxvers FROM search_order_of_busines_files
-                                                     WHERE 
-                                                    barcode =:barcode");
-                                                    $lastpdfs->execute(['barcode'=>$barcode]);
-                                                    $ftclastpdfs = $lastpdfs->fetch();
-
-                                                    if($ftclastpdfs['barcode'] == ""){
-                                                        return $barcode ;
-                                                    }else{
-                                                        // return  $ftclastpdfs['barcode']."-". $ftclastpdfs['mxvers'].".pdf";
-
-                                                        return "<iframe
-                                                        src='https://drive.google.com/viewerng/viewer?embedded=true&url=http://infolab.stanford.edu/pub/papers/google.pdf#toolbar=0&scrollbar=0'
-                                                        frameBorder='0'
-                                                        scrolling='auto'
-                                                        height='100%'
-                                                        width='100%'
-                                                    ></iframe>";
-
-                                                    }
-
-                                                }
-
-
-
-                                                $stmtpdfs = $conn->prepare("SELECT barcode FROM search_order_of_business WHERE order_of_business_code = :order_of_business_code order by added_date DESC");
-                                                $stmtpdfs->execute(['order_of_business_code'=>$session_barcode]);
-                                                
-
-                                                while($rowpdfs = $stmtpdfs->fetchObject()) {
-
-                                                    echo getLastVersio($conn,  $rowpdfs->barcode) ."<br>";
-                                                }
-                                            
-                                            ?>
-                                                </div>
-                                           
-
-                                        </div>
-
-
-                 
                                             <div class="row">
                                                 <div class="col-md-4">
                                                     <?php 
@@ -256,6 +202,10 @@
                                                                             <tr>
                                                                                 <td>Created By</td>
                                                                                 <td>$order_of_business_cby</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>View</td>
+                                                                                <td><a href='s_download_as_zip.php?orderofbusinesscode=$session_barcode'>Download as zip</a></td>
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>";
@@ -398,30 +348,105 @@
                                                         $pdo->close();
 
                                                     ?>
-                                
-                                                <div class="pull-right">
-                                                    <input type="button" class="btn btn-danger" onclick="location.href='s_addupdate_doc'" value="Back" />
-                                                    <button class="btn btn-success btn-actions" data-actions="downloadaszip"><i class="las la-download"></i> Download</button>
-                                                
-                                                </div>
+                            
+                                              
                                                </div>
+
+
+
+
+                                               <div class="row">                                     
+    <div class="col-md-12">
+    <?php 
+        function getLastVersio($conn, $barcode) {
+            $lastpdfs = $conn->prepare("SELECT  a.barcode,  MAX(a.version_no)  AS mxvers, (SELECT CONCAT(order_of_business_id, ' - ', ordering) FROM `search_order_of_business` WHERE barcode = a.barcode ) as nname FROM  search_order_of_busines_files a WHERE a.barcode =:barcode");
+            $lastpdfs->execute(['barcode'=>$barcode]);
+            $ftclastpdfs = $lastpdfs->fetch();
+            $barcodeftclastpdfs = $ftclastpdfs['barcode'] ."-". $ftclastpdfs['mxvers'] ;
+            $businessnameftclastpdfs = $ftclastpdfs['nname'];
+
+
+            if($ftclastpdfs['barcode'] == "") {
+                $lastpdfs2 = $conn->prepare("SELECT  barcode, order_of_business_id, ordering FROM  search_order_of_business WHERE barcode =:barcode order by id DESC");
+                $lastpdfs2->execute(['barcode'=>$barcode]);
+                $ftclastpdfs2 = $lastpdfs2->fetch();
+                $barcodeftclastpdfs2 = $ftclastpdfs2['barcode'];
+                $businessnameftclastpdfs2 = $ftclastpdfs2['order_of_business_id'] ." - ". $ftclastpdfs2['ordering'] ;
+
+                // return " 
+                //         <div class='card'>
+                //             <label>$businessnameftclastpdfs2</label>
+                            // <iframe
+                            //     src='../scanned_docs/$barcodeftclastpdfs2.pdf'
+                                
+                            //     height='100%'
+                            //     width='20%'
+                            // ></iframe>
+                //         </div>
+                //         ";
+
+                return "
+                        <div style='display:inline-block;'>
+                            <div class='card' style='height:500px'>
+                               <div class='card-body'>
+                                    <iframe
+                                        src='../scanned_docs/$barcodeftclastpdfs2.pdf'
+                                        
+                                        height='100%'
+         
+                                    ></iframe>
+                                </div>                           
+                                <div class='card-footer mx-auto'>
+                                    <label class='text-info'>$businessnameftclastpdfs2</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ";
+
+
+
+                
+            }else{
+                return "
+                <div style='display:inline-block;'>
+                    <div class='card' style='height:500px'>
+                       <div class='card-body'>
+                            <iframe
+                                src='../scanned_docs/$barcodeftclastpdfs.pdf'
+                                
+                                height='100%'
+ 
+                            ></iframe>
+                        </div>
+                        <center>
+                        <div class='card-footer mx-auto'>
+                            <label class='text-info'>$businessnameftclastpdfs</label>
+                        </div>
+                        </center>
+                    </div>
+                </div>
+                
+                ";
+            }
+
+        }
+        $stmtpdfs = $conn->prepare("SELECT barcode FROM search_order_of_business WHERE order_of_business_code = :order_of_business_code order by id DESC");
+        $stmtpdfs->execute(['order_of_business_code'=>$session_barcode]);
+        
+
+        while($rowpdfs = $stmtpdfs->fetchObject()) {
+
+            echo getLastVersio($conn,  $rowpdfs->barcode);
+        }
+    ?>
+    </div>
+</div>
+                                          
                                             </div>
 
 
-
-                                            <!-- <table id="tbl_main" class="table table-hover table-bordered table-striped tbl_main" style="width:100%">
-                                                <thead class="cdtheadcolor">
-                                                    <tr>
-                                                        <th>ID</th>
-                                                        <th>Details</th>
-                                                        <th>Creator</th>
-                                                        <th>Created Date</th>
-                                                        <th>Availability</th>
-                                                        <th>Actions</th>
-                                                    </tr>
-                                                </thead>
-                                            </table> -->
-                                    
+        
                                     </div>
                                 </div>
                             </div>

@@ -343,7 +343,7 @@
                     var data = table.row( $(this).parents('tr') ).data();
                     var barcode = data['row3'];
 
-                    window.location.replace(`activity.php?red=${makerandom(400)}&&activity=${barcode}&&det=${makerandom(400)}`);
+                    window.location.replace(`s_activity.php?red=${makerandom(400)}&&activity=${barcode}&&det=${makerandom(400)}`);
               
                 } );
             });

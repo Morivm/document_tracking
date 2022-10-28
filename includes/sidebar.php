@@ -2,6 +2,7 @@
     <div class="main-menu-content">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
             <li class="navigation-header apdmod"><span><b>Main Navigation</b></span><i class="la la-ellipsis-h" data-toggle="tooltip" data-placement="right" data-original-title="Admin Panels"></i></li>
+            <li id="li_gen_dashboard" class="nav-item"><a href="dashboard"><i class="las la-tachometer-alt"></i><span class="menu-title" data-i18n="data-ln_gen_dashboard">Dashboard</span></a></li>
             <li id="li_gen_barcode" class="nav-item"><a href="s_generate_barcode"><i class="las la-barcode"></i><span class="menu-title" data-i18n="data-ln_gen_barcode">Generate Cover Page</span></a></li>
             <li id="li_add_document" class="nav-item"><a href="s_addupdate_doc"><i class="las la-folder-open"></i><span class="menu-title" data-i18n="data-ln_gen_barcode">Activities</span></a></li>
             <!-- <li id="li_search_document" class="nav-item"><a href="#"><i class="las la-search"></i></i><span class="menu-title" data-i18n="data-ln_gen_barcode">Search Document</span></a></li>

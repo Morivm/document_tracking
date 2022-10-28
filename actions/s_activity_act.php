@@ -191,7 +191,7 @@
         $countvwUpdatedfileMAX = $vwUpdatedfilemax->rowCount();
 
         if($countvwUpdatedfileMAX == 0) {
-            $output .= "No Versions of this file uploaded yet.";
+            $output .= "<label class='text-danger'>No Versions of this file uploaded yet.</label>";
         }else{
 
             while ($row2 = $vwUpdatedfilemax->fetchObject()) {
