@@ -10,13 +10,17 @@
             <li class=" navigation-header hidefromuser"><span><b>Settings</b></span><i class="la la-ellipsis-h" data-toggle="tooltip" data-placement="right" data-original-title="Settings"></i> </li>
                 <li id="li_mainte" class="nav-item li_mainte"><a href="#"><i class="la la-cog"-></i><span class="menu-title" data-i18n="Mintenance">Maintenance</span></a>
                     <ul class="menu-content">
-                        <li id="li_mainte_department" class="li_mainte_department modforadm"><a class="menu-item" href="s_maintenance_department"><i></i><span data-i18n="UcDepartmment">Add Department</span></a></li>
+                        <!-- <li id="li_mainte_department" class="li_mainte_department modforadm"><a class="menu-item" href="s_maintenance_department"><i></i><span data-i18n="UcDepartmment">Add Department</span></a></li>
                         <li id="li_mainte_department_sub" class="li_mainte_department_sub modforadm"><a class="menu-item" href="s_maintenance_sub_department"><i></i><span data-i18n="UcDepartmmentsub">Add Sub-Department</span></a></li>
                         <li id="li_mainte_doctype" class="li_mainte_doctype"><a class="menu-item" href="s_maintenance_doctype"><i></i><span data-i18n="UcDoctype">Add Document Type</span></a></li>
-                        <li id="li_mainte_addemployee" class="li_mainte_addemployee modforadm"><a class="menu-item" href="maintenance_add_employee"><i></i><span data-i18n="UAddemployee">Add Employee</span></a></li>
+                         -->
+                        <li id="li_mainte_addemployee" class="li_mainte_addemployee"><a class="menu-item" href="s_maintenance_add_employee"><i></i><span data-i18n="UAddemployee">Add Users</span></a></li>
+                        <li id="li_mainte_orderofbus" class="li_mainte_orderofbus"><a class="menu-item" href="s_maintenance_add_order_ofbusiness"><i></i><span data-i18n="UOrderofbus">Add Order of Business</span></a></li>
+                    
                     </ul>
                 </li>
-            <li id="web_setup" class=" nav-item modforadm"><a href="web_setup"><i class="las la-globe"></i><span class="menu-title" data-i18n="Web">Web Setup</span></a></li>
+            <!-- <li id="web_setup" class=" nav-item modforadm"><a href="web_setup"><i class="las la-globe"></i><span class="menu-title" data-i18n="Web">Web Setup</span></a></li>
+        -->
         </ul>
     </div>
 </div>
